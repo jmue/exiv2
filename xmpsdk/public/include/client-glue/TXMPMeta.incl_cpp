@@ -11,7 +11,7 @@
 /// \file TXMPMeta.incl_cpp
 /// \brief The implementation of the TXMPMeta template class.
 
-#include "XMPSDK.hpp"
+#include "XMP.hpp"
 #include "client-glue/WXMP_Common.hpp"
 #include "client-glue/WXMPMeta.hpp"
 
@@ -233,11 +233,17 @@ DumpAliases ( XMP_TextOutputProc outProc,
 
 // -------------------------------------------------------------------------------------------------
 
-XMP_MethodIntro(TXMPMeta,void)::
+XMP_MethodIntro(TXMPMeta,bool)::
 RegisterNamespace ( XMP_StringPtr namespaceURI,
-                    XMP_StringPtr prefix )
+                    XMP_StringPtr suggestedPrefix,
+                    tStringObj *  registeredPrefix )
 {
-	WrapCheckVoid ( zXMPMeta_RegisterNamespace_1 ( namespaceURI, prefix ) );
+	XMP_StringPtr resultPtr = 0;
+	XMP_StringLen resultLen = 0;
+	WrapCheckBool ( prefixMatch, zXMPMeta_RegisterNamespace_1 ( namespaceURI, suggestedPrefix, &resultPtr, &resultLen ) );
+	if ( registeredPrefix != 0 ) registeredPrefix->assign ( resultPtr, resultLen );
+	WXMPMeta_Unlock_1 ( 0 );
+	return prefixMatch;
 }
 
 // -------------------------------------------------------------------------------------------------

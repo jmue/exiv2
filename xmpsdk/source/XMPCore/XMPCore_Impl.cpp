@@ -18,10 +18,8 @@
 using namespace std;
 
 #if XMP_WinBuild
-    #ifdef _MSC_VER
-        #pragma warning ( disable : 4290 )	// C++ exception specification ignored except ... not __declspec(nothrow)
-        #pragma warning ( disable : 4800 )	// forcing value to bool 'true' or 'false' (performance warning)
-    #endif
+	#pragma warning ( disable : 4290 )	// C++ exception specification ignored except ... not __declspec(nothrow)
+	#pragma warning ( disable : 4800 )	// forcing value to bool 'true' or 'false' (performance warning)
 #endif
 
 // *** Add debug codegen checks, e.g. that typical masking operations really work
@@ -666,7 +664,6 @@ ExpandXPath	( XMP_StringPtr			schemaNS,
 	XMP_StringPtr	qualName, nameEnd;
 	XMP_VarString	currStep;
 		
-	qualName = nameEnd = NULL;
 	size_t resCount = 2;	// Guess at the number of steps. At least 2, plus 1 for each '/' or '['.
 	for ( stepEnd = propPath; *stepEnd != 0; ++stepEnd ) {
 		if ( (*stepEnd == '/') || (*stepEnd == '[') ) ++resCount;
@@ -845,8 +842,7 @@ FindSchemaNode	( XMP_Node *		xmpTree,
 		schemaNode = new XMP_Node ( xmpTree, nsURI, (kXMP_SchemaNode | kXMP_NewImplicitNode) );
 		XMP_StringPtr prefixPtr;
 		XMP_StringLen prefixLen;
-        bool found = false;
-        found = XMPMeta::GetNamespacePrefix ( nsURI, &prefixPtr, &prefixLen );	// *** Use map directly?
+		bool found = XMPMeta::GetNamespacePrefix ( nsURI, &prefixPtr, &prefixLen );	// *** Use map directly?
 		XMP_Assert ( found );
 
 		schemaNode->value.assign ( prefixPtr, prefixLen );
@@ -1416,8 +1412,7 @@ NormalizeLangArray ( XMP_Node * array )
 			array->children[itemNum] = temp;
 		}
 
-// 09-Oct-07, ahu: disabled to avoid unexpected behaviour
-//		if ( itemLim == 2 ) array->children[1]->value = array->children[0]->value;
+		if ( itemLim == 2 ) array->children[1]->value = array->children[0]->value;
 
 	}
 	

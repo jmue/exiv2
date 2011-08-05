@@ -19,9 +19,7 @@
 using namespace std;
 
 #if XMP_WinBuild
-#   ifdef _MSC_VER
-        #pragma warning ( disable : 4996 )	// '...' was declared deprecated
-#   endif
+	#pragma warning ( disable : 4996 )	// '...' was declared deprecated
 #endif
 
 // *** Set memory handlers.
@@ -260,7 +258,7 @@ static void StartNamespaceDeclHandler ( void * userData, XMP_StringPtr prefix, X
 	#endif
 	
 	if ( XMP_LitMatch ( uri, "http://purl.org/dc/1.1/" ) ) uri = "http://purl.org/dc/elements/1.1/";
-	XMPMeta::RegisterNamespace ( uri, prefix );
+	(void) XMPMeta::RegisterNamespace ( uri, prefix, &voidStringPtr, &voidStringLen );
 
 }	// StartNamespaceDeclHandler
 

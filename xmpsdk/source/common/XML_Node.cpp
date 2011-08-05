@@ -10,17 +10,13 @@
 #include "XMLParserAdapter.hpp"
 
 #include <map>
-#include <cstring>
-#include <cstdio>
 
 // ! Can't include XMP..._Impl.hpp - used by both Core and Files.
 #define XMP_LitNMatch(s,l,n)	(std::strncmp((s),(l),(n)) == 0)
 
 #if XMP_WinBuild
-#ifdef _MSC_VER
 	#define snprintf _snprintf
 	#pragma warning ( disable : 4996 )	// snprintf is safe
-#endif
 #endif
 
 // =================================================================================================
@@ -216,7 +212,7 @@ static void DumpNodeList ( std::string * buffer, const XML_NodeVector & list, in
 		if ( node->nsPrefixLen != 0 ) {
 			*buffer += ", prefixLen=";
 			char numBuf [20];
-			snprintf ( numBuf, sizeof(numBuf), "%lu", (unsigned long)node->nsPrefixLen );
+			snprintf ( numBuf, sizeof(numBuf), "%d", node->nsPrefixLen );
 			*buffer += numBuf;
 		}
 		*buffer += "\n";

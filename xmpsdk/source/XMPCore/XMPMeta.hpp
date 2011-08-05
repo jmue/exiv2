@@ -67,9 +67,11 @@ public:
 	
 	// ---------------------------------------------------------------------------------------------
 	
-	static void
+	static bool
 	RegisterNamespace ( XMP_StringPtr	namespaceURI,
-                            XMP_StringPtr	prefix );
+						XMP_StringPtr	suggestedPrefix,
+						XMP_StringPtr * registeredPrefix,
+						XMP_StringLen * prefixSize );
 	
 	static bool
 	GetNamespacePrefix ( XMP_StringPtr	 namespaceURI,
@@ -405,7 +407,7 @@ public:
 private:
   
 	// ! These are hidden on purpose:
-	XMPMeta ( const XMPMeta & /* original */ ) : clientRefs(0), prevTkVer(0), tree(XMP_Node(0,"",0)), xmlParser(0)
+	XMPMeta ( const XMPMeta & /* original */ ) : tree(XMP_Node(0,"",0)), clientRefs(0), prevTkVer(0), xmlParser(0)
 		{ XMP_Throw ( "Call to hidden constructor", kXMPErr_InternalFailure ); };
 	void operator= ( const XMPMeta & /* rhs */ )  
 		{ XMP_Throw ( "Call to hidden operator=", kXMPErr_InternalFailure ); };
