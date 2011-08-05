@@ -19,8 +19,10 @@
 using namespace std;
 
 #if XMP_WinBuild
-	#pragma warning ( disable : 4189 )	// local variable is initialized but not referenced
-	#pragma warning ( disable : 4505 )	// unreferenced local function has been removed
+#   ifdef _MSC_VER
+        #pragma warning ( disable : 4189 )	// local variable is initialized but not referenced
+        #pragma warning ( disable : 4505 )	// unreferenced local function has been removed
+#   endif
 #endif
 
 // =================================================================================================
@@ -318,21 +320,6 @@ IsCoreSyntaxTerm ( RDFTermKind term )
 
 }	// IsCoreSyntaxTerm
 
-// -------------------------------------------------------------------------------------------------
-// IsSyntaxTerm
-// ------------
-//
-// 7.2.3 syntaxTerms
-//		coreSyntaxTerms | rdf:Description | rdf:li
-
-static bool
-IsSyntaxTerm ( RDFTermKind term )
-{
-
-	if 	( (kRDFTerm_FirstSyntax <= term) && (term <= kRDFTerm_LastSyntax) ) return true;
-	return false;
-
-}	// IsSyntaxTerm
 
 // -------------------------------------------------------------------------------------------------
 // IsOldTerm
@@ -351,22 +338,6 @@ IsOldTerm ( RDFTermKind term )
 }	// IsOldTerm
 
 // -------------------------------------------------------------------------------------------------
-// IsNodeElementName
-// -----------------
-//
-// 7.2.5 nodeElementURIs
-//		anyURI - ( coreSyntaxTerms | rdf:li | oldTerms )
-
-static bool
-IsNodeElementName ( RDFTermKind term )
-{
-
-	if 	( (term == kRDFTerm_li) || IsOldTerm ( term ) ) return false;
-	return (! IsCoreSyntaxTerm ( term ));
-
-}	// IsNodeElementName
-
-// -------------------------------------------------------------------------------------------------
 // IsPropertyElementName
 // ---------------------
 //
@@ -381,23 +352,6 @@ IsPropertyElementName ( RDFTermKind term )
 	return (! IsCoreSyntaxTerm ( term ));
 
 }	// IsPropertyElementName
-
-// -------------------------------------------------------------------------------------------------
-// IsPropertyAttributeName
-// -----------------------
-//
-// 7.2.7 propertyAttributeURIs
-//		anyURI - ( coreSyntaxTerms | rdf:Description | rdf:li | oldTerms )
-
-static bool
-IsPropertyAttributeName ( RDFTermKind term )
-{
-
-	if 	( (term == kRDFTerm_Description) || (term == kRDFTerm_li) || IsOldTerm ( term ) ) return false;
-	return (! IsCoreSyntaxTerm ( term ));
-
-}	// IsPropertyAttributeName
-
 
 // =================================================================================================
 // AddChildNode

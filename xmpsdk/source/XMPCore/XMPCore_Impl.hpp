@@ -20,17 +20,20 @@
 #include <map>
 
 #include <cassert>
+#include <cstring>
 
 #if XMP_WinBuild
-	#include <Windows.h>
+	#include <windows.h>
 #else
 	// Use pthread for both Mac and generic UNIX.
 	#include <pthread.h>
 #endif
 
 #if XMP_WinBuild
-	#pragma warning ( disable : 4244 )	// possible loss of data (temporary for 64 bit builds)
-	#pragma warning ( disable : 4267 )	// possible loss of data (temporary for 64 bit builds)
+#   ifdef _MSC_VER
+        #pragma warning ( disable : 4244 )	// possible loss of data (temporary for 64 bit builds)
+        #pragma warning ( disable : 4267 )	// possible loss of data (temporary for 64 bit builds)
+#   endif
 #endif
 
 // =================================================================================================

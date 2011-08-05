@@ -13,13 +13,15 @@
 #include "client-glue/WXMPMeta.hpp"
 
 #if XMP_WinBuild
-	#pragma warning ( disable : 4101 ) // unreferenced local variable
-	#pragma warning ( disable : 4189 ) // local variable is initialized but not referenced
-	#pragma warning ( disable : 4702 ) // unreachable code
-	#pragma warning ( disable : 4800 ) // forcing value to bool 'true' or 'false' (performance warning)
-	#if XMP_DebugBuild
-		#pragma warning ( disable : 4297 ) // function assumed not to throw an exception but does
-	#endif
+    #ifdef _MSC_VER
+        #pragma warning ( disable : 4101 ) // unreferenced local variable
+        #pragma warning ( disable : 4189 ) // local variable is initialized but not referenced
+        #pragma warning ( disable : 4702 ) // unreachable code
+        #pragma warning ( disable : 4800 ) // forcing value to bool 'true' or 'false' (performance warning)
+        #if XMP_DebugBuild
+            #pragma warning ( disable : 4297 ) // function assumed not to throw an exception but does
+        #endif
+    #endif
 #endif
 
 #if __cplusplus
@@ -215,23 +217,17 @@ WXMPMeta_Unlock_1 ( XMP_OptionBits options )
 
 /* class static */ void
 WXMPMeta_RegisterNamespace_1 ( XMP_StringPtr   namespaceURI,
-							   XMP_StringPtr   suggestedPrefix,
-							   XMP_StringPtr * registeredPrefix,
-							   XMP_StringLen * prefixSize,
-							   WXMP_Result *   wResult )
+                               XMP_StringPtr   prefix,
+                               WXMP_Result *   wResult )
 {
 	XMP_ENTER_WRAPPER ( "WXMPMeta_RegisterNamespace_1" )
 
 		if ( (namespaceURI == 0) || (*namespaceURI == 0) ) XMP_Throw ( "Empty namespace URI", kXMPErr_BadSchema );
-		if ( (suggestedPrefix == 0) || (*suggestedPrefix == 0) ) XMP_Throw ( "Empty suggested prefix", kXMPErr_BadSchema );
+		if ( (prefix == 0) || (*prefix == 0) ) XMP_Throw ( "Empty prefix", kXMPErr_BadSchema );
 
-		if ( registeredPrefix == 0 ) registeredPrefix = &voidStringPtr;
-		if ( prefixSize == 0 ) prefixSize = &voidStringLen;
+		XMPMeta::RegisterNamespace ( namespaceURI, prefix );
 
-		bool prefixMatch = XMPMeta::RegisterNamespace ( namespaceURI, suggestedPrefix, registeredPrefix, prefixSize );
-		wResult->int32Result = prefixMatch;
-
-	XMP_EXIT_WRAPPER_KEEP_LOCK ( true ) // ! Always keep the lock, a string is always returned!
+	XMP_EXIT_WRAPPER
 }
 
 // -------------------------------------------------------------------------------------------------

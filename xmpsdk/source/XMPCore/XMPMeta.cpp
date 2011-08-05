@@ -22,7 +22,6 @@
 #include "UnicodeConversions.hpp"
 
 #include <algorithm>	// For sort and stable_sort.
-#include <stdio.h>		// For snprintf.
 
 #if XMP_DebugBuild
 	#include <iostream>
@@ -31,10 +30,12 @@
 using namespace std;
 
 #if XMP_WinBuild
+#ifdef _MSC_VER
 	#pragma warning ( disable : 4533 )	// initialization of '...' is skipped by 'goto ...'
 	#pragma warning ( disable : 4702 )	// unreachable code
 	#pragma warning ( disable : 4800 )	// forcing value to bool 'true' or 'false' (performance warning)
 	#pragma warning ( disable : 4996 )	// '...' was declared deprecated
+#endif
 #endif
 
 
@@ -80,10 +81,10 @@ static const char * kTenSpaces = "          ";
 
 #define OutProcString(str)	{ status = (*outProc) ( refCon, (str).c_str(), (str).size() );  if ( status != 0 ) goto EXIT; }
 
-#define OutProcDecInt(num)	{ snprintf ( buffer, sizeof(buffer), "%d", (num) ); /* AUDIT: Using sizeof for snprintf length is safe */	\
+#define OutProcULong(num)	{ snprintf ( buffer, sizeof(buffer), "%lu", (num) ); /* AUDIT: Using sizeof for snprintf length is safe */ \
 							  status = (*outProc) ( refCon, buffer, strlen(buffer) );  if ( status != 0 ) goto EXIT; }
 
-#define OutProcHexInt(num)	{ snprintf ( buffer, sizeof(buffer), "%X", (num) ); /* AUDIT: Using sizeof for snprintf length is safe */	\
+#define OutProcHexInt(num)	{ snprintf ( buffer, sizeof(buffer), "%lX", (num) ); /* AUDIT: Using sizeof for snprintf length is safe */	\
 							  status = (*outProc) ( refCon, buffer, strlen(buffer) );  if ( status != 0 ) goto EXIT; }
 
 #define OutProcHexByte(num)	{ snprintf ( buffer, sizeof(buffer), "%.2X", (num) ); /* AUDIT: Using sizeof for snprintf length is safe */	\
@@ -113,7 +114,7 @@ DumpClearString ( const XMP_VarString & value, XMP_TextOutputProc outProc, void 
 	
 		// Output the next span of regular characters.
 		for ( spanEnd = spanStart; spanEnd < valueEnd; ++spanEnd ) {
-			if ( *spanEnd > 0x7F ) break;
+			if ( (unsigned char)(*spanEnd) > 0x7F ) break;
 			if ( (*spanEnd < 0x20) && (*spanEnd != kTab) && (*spanEnd != kLF) ) break;
 		}
 		if ( spanStart != spanEnd ) status = (*outProc) ( refCon,  spanStart, (spanEnd-spanStart) );
@@ -123,7 +124,7 @@ DumpClearString ( const XMP_VarString & value, XMP_TextOutputProc outProc, void 
 		// Output the next span of irregular characters.
 		prevNormal = true;
 		for ( spanEnd = spanStart; spanEnd < valueEnd; ++spanEnd ) {
-			if ( ((0x20 <= *spanEnd) && (*spanEnd <= 0x7F)) || (*spanEnd == kTab) || (*spanEnd == kLF) ) break;
+			if ( ((0x20 <= *spanEnd) && ((unsigned char)(*spanEnd) <= 0x7F)) || (*spanEnd == kTab) || (*spanEnd == kLF) ) break;
 			char space = ' ';
 			if ( prevNormal ) space = '<';
 			status = (*outProc) ( refCon, &space, 1 );
@@ -273,7 +274,7 @@ DumpPropertyTree ( const XMP_Node *	  currNode,
 		DumpClearString ( currNode->name, outProc, refCon );
 	} else {
 		OutProcNChars ( "[", 1 );
-		OutProcDecInt ( itemIndex );
+		OutProcULong ( static_cast<unsigned long>(itemIndex) );
 		OutProcNChars ( "]", 1 );
 	}
 
@@ -580,7 +581,7 @@ SortWithinOffspring ( XMP_NodeOffspring & nodeVec )
 // ============
 
 
-XMPMeta::XMPMeta() : tree(XMP_Node(0,"",0)), clientRefs(0), prevTkVer(0), xmlParser(0)
+XMPMeta::XMPMeta() : clientRefs(0), prevTkVer(0), tree(XMP_Node(0,"",0)), xmlParser(0)
 {
 	// Nothing more to do, clientRefs is incremented in wrapper.
 	#if XMP_TraceCTorDTor
@@ -661,69 +662,66 @@ XMPMeta::Initialize()
 	InitializeUnicodeConversions();
 	
 	// Register standard namespaces and aliases.
+	RegisterNamespace ( kXMP_NS_XML, "xml" );
+	RegisterNamespace ( kXMP_NS_RDF, "rdf" );
+	RegisterNamespace ( kXMP_NS_DC, "dc" );
+
+	RegisterNamespace ( kXMP_NS_XMP, "xmp" );
+	RegisterNamespace ( kXMP_NS_PDF, "pdf" );
+	RegisterNamespace ( kXMP_NS_Photoshop, "photoshop" );
+	RegisterNamespace ( kXMP_NS_PSAlbum, "album" );
+	RegisterNamespace ( kXMP_NS_EXIF, "exif" );
+	RegisterNamespace ( kXMP_NS_EXIF_Aux, "aux" );
+	RegisterNamespace ( kXMP_NS_TIFF, "tiff" );
+	RegisterNamespace ( kXMP_NS_PNG, "png" );
+	RegisterNamespace ( kXMP_NS_JPEG, "jpeg" );
+	RegisterNamespace ( kXMP_NS_JP2K, "jp2k" );
+	RegisterNamespace ( kXMP_NS_CameraRaw, "crs" );
+	RegisterNamespace ( kXMP_NS_ASF, "asf" );
+	RegisterNamespace ( kXMP_NS_WAV, "wav" );
+
+	RegisterNamespace ( kXMP_NS_AdobeStockPhoto, "bmsp" );
+	RegisterNamespace ( kXMP_NS_CreatorAtom, "creatorAtom" );
+
+	RegisterNamespace ( kXMP_NS_XMP_Rights, "xmpRights" );
+	RegisterNamespace ( kXMP_NS_XMP_MM, "xmpMM" );
+	RegisterNamespace ( kXMP_NS_XMP_BJ, "xmpBJ" );
+	RegisterNamespace ( kXMP_NS_XMP_Note, "xmpNote" );
+
+	RegisterNamespace ( kXMP_NS_DM, "xmpDM" );
+	RegisterNamespace ( kXMP_NS_XMP_Text, "xmpT" );
+	RegisterNamespace ( kXMP_NS_XMP_PagedFile, "xmpTPg" );
+	RegisterNamespace ( kXMP_NS_XMP_Graphics, "xmpG" );
+	RegisterNamespace ( kXMP_NS_XMP_Image, "xmpGImg" );
+
+	RegisterNamespace ( kXMP_NS_XMP_Font, "stFnt" );
+	RegisterNamespace ( kXMP_NS_XMP_Dimensions, "stDim" );
+	RegisterNamespace ( kXMP_NS_XMP_ResourceEvent, "stEvt" );
+	RegisterNamespace ( kXMP_NS_XMP_ResourceRef, "stRef" );
+	RegisterNamespace ( kXMP_NS_XMP_ST_Version, "stVer" );
+	RegisterNamespace ( kXMP_NS_XMP_ST_Job, "stJob" );
+	RegisterNamespace ( kXMP_NS_XMP_ManifestItem, "stMfs" );
+
+	RegisterNamespace ( kXMP_NS_XMP_IdentifierQual, "xmpidq" );
+
+	RegisterNamespace ( kXMP_NS_IPTCCore, "Iptc4xmpCore" );
+	RegisterNamespace ( kXMP_NS_DICOM, "DICOM" );
+
+	RegisterNamespace ( kXMP_NS_PDFA_Schema, "pdfaSchema" );
+	RegisterNamespace ( kXMP_NS_PDFA_Property, "pdfaProperty" );
+	RegisterNamespace ( kXMP_NS_PDFA_Type, "pdfaType" );
+	RegisterNamespace ( kXMP_NS_PDFA_Field, "pdfaField" );
+	RegisterNamespace ( kXMP_NS_PDFA_ID, "pdfaid" );
+	RegisterNamespace ( kXMP_NS_PDFA_Extension, "pdfaExtension" );
+
+	RegisterNamespace ( kXMP_NS_PDFX, "pdfx" );
+	RegisterNamespace ( kXMP_NS_PDFX_ID, "pdfxid" );
 	
-	XMP_StringPtr	voidPtr;
-	XMP_StringLen	voidLen;
-	
-	(void) RegisterNamespace ( kXMP_NS_XML, "xml", &voidPtr, &voidLen );
-	(void) RegisterNamespace ( kXMP_NS_RDF, "rdf", &voidPtr, &voidLen );
-	(void) RegisterNamespace ( kXMP_NS_DC, "dc", &voidPtr, &voidLen );
+	RegisterNamespace ( "adobe:ns:meta/", "x" );
+	RegisterNamespace ( "http://ns.adobe.com/iX/1.0/", "iX" );
 
-	(void) RegisterNamespace ( kXMP_NS_XMP, "xmp", &voidPtr, &voidLen );
-	(void) RegisterNamespace ( kXMP_NS_PDF, "pdf", &voidPtr, &voidLen );
-	(void) RegisterNamespace ( kXMP_NS_Photoshop, "photoshop", &voidPtr, &voidLen );
-	(void) RegisterNamespace ( kXMP_NS_PSAlbum, "album", &voidPtr, &voidLen );
-	(void) RegisterNamespace ( kXMP_NS_EXIF, "exif", &voidPtr, &voidLen );
-	(void) RegisterNamespace ( kXMP_NS_EXIF_Aux, "aux", &voidPtr, &voidLen );
-	(void) RegisterNamespace ( kXMP_NS_TIFF, "tiff", &voidPtr, &voidLen );
-	(void) RegisterNamespace ( kXMP_NS_PNG, "png", &voidPtr, &voidLen );
-	(void) RegisterNamespace ( kXMP_NS_JPEG, "jpeg", &voidPtr, &voidLen );
-	(void) RegisterNamespace ( kXMP_NS_JP2K, "jp2k", &voidPtr, &voidLen );
-	(void) RegisterNamespace ( kXMP_NS_CameraRaw, "crs", &voidPtr, &voidLen );
-	(void) RegisterNamespace ( kXMP_NS_ASF, "asf", &voidPtr, &voidLen );
-	(void) RegisterNamespace ( kXMP_NS_WAV, "wav", &voidPtr, &voidLen );
-
-	(void) RegisterNamespace ( kXMP_NS_AdobeStockPhoto, "bmsp", &voidPtr, &voidLen );
-	(void) RegisterNamespace ( kXMP_NS_CreatorAtom, "creatorAtom", &voidPtr, &voidLen );
-
-	(void) RegisterNamespace ( kXMP_NS_XMP_Rights, "xmpRights", &voidPtr, &voidLen );
-	(void) RegisterNamespace ( kXMP_NS_XMP_MM, "xmpMM", &voidPtr, &voidLen );
-	(void) RegisterNamespace ( kXMP_NS_XMP_BJ, "xmpBJ", &voidPtr, &voidLen );
-	(void) RegisterNamespace ( kXMP_NS_XMP_Note, "xmpNote", &voidPtr, &voidLen );
-
-	(void) RegisterNamespace ( kXMP_NS_DM, "xmpDM", &voidPtr, &voidLen );
-	(void) RegisterNamespace ( kXMP_NS_XMP_Text, "xmpT", &voidPtr, &voidLen );
-	(void) RegisterNamespace ( kXMP_NS_XMP_PagedFile, "xmpTPg", &voidPtr, &voidLen );
-	(void) RegisterNamespace ( kXMP_NS_XMP_Graphics, "xmpG", &voidPtr, &voidLen );
-	(void) RegisterNamespace ( kXMP_NS_XMP_Image, "xmpGImg", &voidPtr, &voidLen );
-
-	(void) RegisterNamespace ( kXMP_NS_XMP_Font, "stFnt", &voidPtr, &voidLen );
-	(void) RegisterNamespace ( kXMP_NS_XMP_Dimensions, "stDim", &voidPtr, &voidLen );
-	(void) RegisterNamespace ( kXMP_NS_XMP_ResourceEvent, "stEvt", &voidPtr, &voidLen );
-	(void) RegisterNamespace ( kXMP_NS_XMP_ResourceRef, "stRef", &voidPtr, &voidLen );
-	(void) RegisterNamespace ( kXMP_NS_XMP_ST_Version, "stVer", &voidPtr, &voidLen );
-	(void) RegisterNamespace ( kXMP_NS_XMP_ST_Job, "stJob", &voidPtr, &voidLen );
-	(void) RegisterNamespace ( kXMP_NS_XMP_ManifestItem, "stMfs", &voidPtr, &voidLen );
-
-	(void) RegisterNamespace ( kXMP_NS_XMP_IdentifierQual, "xmpidq", &voidPtr, &voidLen );
-
-	(void) RegisterNamespace ( kXMP_NS_IPTCCore, "Iptc4xmpCore", &voidPtr, &voidLen );
-	(void) RegisterNamespace ( kXMP_NS_DICOM, "DICOM", &voidPtr, &voidLen );
-
-	(void) RegisterNamespace ( kXMP_NS_PDFA_Schema, "pdfaSchema", &voidPtr, &voidLen );
-	(void) RegisterNamespace ( kXMP_NS_PDFA_Property, "pdfaProperty", &voidPtr, &voidLen );
-	(void) RegisterNamespace ( kXMP_NS_PDFA_Type, "pdfaType", &voidPtr, &voidLen );
-	(void) RegisterNamespace ( kXMP_NS_PDFA_Field, "pdfaField", &voidPtr, &voidLen );
-	(void) RegisterNamespace ( kXMP_NS_PDFA_ID, "pdfaid", &voidPtr, &voidLen );
-	(void) RegisterNamespace ( kXMP_NS_PDFA_Extension, "pdfaExtension", &voidPtr, &voidLen );
-
-	(void) RegisterNamespace ( kXMP_NS_PDFX, "pdfx", &voidPtr, &voidLen );
-	(void) RegisterNamespace ( kXMP_NS_PDFX_ID, "pdfxid", &voidPtr, &voidLen );
-	
-	(void) RegisterNamespace ( "adobe:ns:meta/", "x", &voidPtr, &voidLen );
-	(void) RegisterNamespace ( "http://ns.adobe.com/iX/1.0/", "iX", &voidPtr, &voidLen );
-	
-	XMPMeta::RegisterStandardAliases ( "" );
+// 06-Oct-07, ahu: Do not use aliases. They result in unexpected behaviour.
+//	XMPMeta::RegisterStandardAliases ( "" );
 	
 	// Initialize the other core classes.
 	
@@ -741,7 +739,8 @@ XMPMeta::Initialize()
 	XMP_Assert ( sizeof(XMP_Uns64) == 8 );
 	
 	XMP_Assert ( sizeof(XMP_OptionBits) == 4 );	// Check that option masking work on all 32 bits.
-	XMP_OptionBits flag = ~0UL;
+	XMP_OptionBits flag;
+    flag = ~0UL;
 	XMP_Assert ( flag == (XMP_OptionBits)(-1L) );
 	XMP_Assert ( (flag ^ kXMP_PropHasLang) == 0xFFFFFFBFUL );
 	XMP_Assert ( (flag & ~kXMP_PropHasLang) == 0xFFFFFFBFUL );
@@ -1033,60 +1032,22 @@ XMPMeta::SetGlobalOptions ( XMP_OptionBits options )
 // RegisterNamespace
 // -----------------
 
-/* class-static */ bool
+/* class-static */ void
 XMPMeta::RegisterNamespace ( XMP_StringPtr	 namespaceURI,
-							 XMP_StringPtr	 suggestedPrefix,
-							 XMP_StringPtr * registeredPrefix,
-							 XMP_StringLen * prefixSize )
+                             XMP_StringPtr	 prefix )
 {
-	bool	prefixMatches	= false;
-	
-	XMP_Assert ( (registeredPrefix != 0) && (prefixSize != 0) );		// ! Enforced by wrapper.
-	if ( (*namespaceURI == 0) || (*suggestedPrefix == 0) ) {
+	if ( (*namespaceURI == 0) || (*prefix == 0) ) {
 		XMP_Throw ( "Empty namespace URI or prefix", kXMPErr_BadParam );
 	}
 	
 	XMP_VarString	nsURI ( namespaceURI );
-	XMP_VarString	suggPrefix ( suggestedPrefix );
-	if ( suggPrefix[suggPrefix.size()-1] != ':' ) suggPrefix += ':';
-	VerifySimpleXMLName ( suggestedPrefix, suggestedPrefix+suggPrefix.size()-1 );	// Exclude the colon.
+	XMP_VarString	prfix ( prefix );
+	if ( prfix[prfix.size()-1] != ':' ) prfix += ':';
+	VerifySimpleXMLName ( prefix, prefix+prfix.size()-1 );	// Exclude the colon.
 	
-	XMP_StringMapPos	uriPos	= sNamespaceURIToPrefixMap->find ( nsURI );
-	
-	if ( uriPos == sNamespaceURIToPrefixMap->end() ) {
-		
-		// The URI is not yet registered, make sure we use a unique prefix.
-		
-		XMP_VarString	uniqPrefix ( suggPrefix );
-		int		suffix = 0;
-		char	buffer [32];
-
-		while ( true ) {
-			if ( sNamespacePrefixToURIMap->find ( uniqPrefix ) == sNamespacePrefixToURIMap->end() ) break;
-			++suffix;
-			snprintf ( buffer, sizeof(buffer), "_%d_:", suffix );	// AUDIT: Using sizeof for snprintf length is safe.
-			uniqPrefix = suggPrefix;
-			uniqPrefix.erase ( uniqPrefix.size()-1 );	// ! Remove the trailing ':'.
-			uniqPrefix += buffer;
-		}
-		
-		// Add the new namespace to both maps.
-		
-		XMP_StringPair	newNS ( nsURI, uniqPrefix );
-		uriPos = sNamespaceURIToPrefixMap->insert ( sNamespaceURIToPrefixMap->end(), newNS );
-		
-		newNS.first.swap ( newNS.second );
-		(void) sNamespacePrefixToURIMap->insert ( sNamespacePrefixToURIMap->end(), newNS );
-
-	}
-	
-	// Return the actual prefix and see if it matches the suggested prefix.
-	
-	*registeredPrefix = uriPos->second.c_str();
-	*prefixSize = uriPos->second.size();
-	
-	prefixMatches = ( uriPos->second == suggPrefix );
-	return prefixMatches;
+        // Set the new namespace in both maps.
+        (*sNamespaceURIToPrefixMap)[nsURI] = prfix;
+        (*sNamespacePrefixToURIMap)[prfix] = nsURI;
 	
 }	// RegisterNamespace
 
@@ -1160,7 +1121,6 @@ XMPMeta::GetNamespaceURI ( XMP_StringPtr   namespacePrefix,
 /* class-static */ void
 XMPMeta::DeleteNamespace ( XMP_StringPtr namespaceURI )
 {
-
 	XMP_StringMapPos uriPos = sNamespaceURIToPrefixMap->find ( namespaceURI );
 	if ( uriPos == sNamespaceURIToPrefixMap->end() ) return;
 
