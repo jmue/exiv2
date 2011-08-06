@@ -38,7 +38,7 @@ versions.
 #define XMP_API_VERSION_MICRO  2
 
 #define XMP_API_VERSION 5.1.2
-#define XMP_API_VERSION_STRING "5.1.2"
+#define XMP_API_VERSION_STRING "5.1.2-Exiv2"
 
 /* ============================================================================================= */
 

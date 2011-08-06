@@ -604,7 +604,7 @@ XMPUtils::ComposeArrayItemPath ( XMP_StringPtr	 schemaNS,
 	} else {
 		// AUDIT: Using sizeof(buffer) for the snprintf length is safe.
 		char buffer [32];	// A 32 byte buffer is plenty, even for a 64-bit integer.
-		snprintf ( buffer, sizeof(buffer), "[%d]", itemIndex );
+		snprintf ( buffer, sizeof(buffer), "[%d]", static_cast<int>(itemIndex) );
 		fullPath += buffer;
 	}
 
@@ -915,7 +915,7 @@ XMPUtils::ConvertFromDate ( const XMP_DateTime & _inValue,
 		// Output YYYY if all else is zero, otherwise output a full string for the quasi-bogus
 		// "time only" values from Photoshop CS.
 		if ( (binValue.day == 0) && (! binValue.hasTime) ) {
-			snprintf ( buffer, sizeof(buffer), "%.4d", binValue.year ); // AUDIT: Using sizeof for snprintf length is safe.
+			snprintf ( buffer, sizeof(buffer), "%.4d", static_cast<int>(binValue.year) ); // AUDIT: Using sizeof for snprintf length is safe.
 		} else if ( (binValue.year == 0) && (binValue.day == 0) ) {
 			FormatFullDateTime ( binValue, buffer, sizeof(buffer) );
 		} else {
@@ -927,14 +927,14 @@ XMPUtils::ConvertFromDate ( const XMP_DateTime & _inValue,
 		// Output YYYY-MM.
 		if ( (binValue.month < 1) || (binValue.month > 12) ) XMP_Throw ( "Month is out of range", kXMPErr_BadParam);
 		if ( binValue.hasTime ) XMP_Throw ( "Invalid partial date, non-zeros after zero month and day", kXMPErr_BadParam);
-		snprintf ( buffer, sizeof(buffer), "%.4d-%02d", binValue.year, binValue.month );	// AUDIT: Using sizeof for snprintf length is safe.
+		snprintf ( buffer, sizeof(buffer), "%.4d-%02d", static_cast<int>(binValue.year), static_cast<int>(binValue.month) );	// AUDIT: Using sizeof for snprintf length is safe.
 		
 	} else if ( ! binValue.hasTime ) {
 
 		// Output YYYY-MM-DD.
 		if ( (binValue.month < 1) || (binValue.month > 12) ) XMP_Throw ( "Month is out of range", kXMPErr_BadParam);
 		if ( (binValue.day < 1) || (binValue.day > 31) ) XMP_Throw ( "Day is out of range", kXMPErr_BadParam);
-		snprintf ( buffer, sizeof(buffer), "%.4d-%02d-%02d", binValue.year, binValue.month, binValue.day ); // AUDIT: Using sizeof for snprintf length is safe.
+		snprintf ( buffer, sizeof(buffer), "%.4d-%02d-%02d", static_cast<int>(binValue.year), static_cast<int>(binValue.month), static_cast<int>(binValue.day) ); // AUDIT: Using sizeof for snprintf length is safe.
 
 	} else {
 	
@@ -956,7 +956,7 @@ XMPUtils::ConvertFromDate ( const XMP_DateTime & _inValue,
 		if ( binValue.tzSign == 0 ) {
 			*strValue += 'Z';
 		} else {
-			snprintf ( buffer, sizeof(buffer), "+%02d:%02d", binValue.tzHour, binValue.tzMinute );	// AUDIT: Using sizeof for snprintf length is safe.
+			snprintf ( buffer, sizeof(buffer), "+%02d:%02d", static_cast<int>(binValue.tzHour), static_cast<int>(binValue.tzMinute) );	// AUDIT: Using sizeof for snprintf length is safe.
 			if ( binValue.tzSign < 0 ) buffer[0] = '-';
 			*strValue += buffer;
 		}
