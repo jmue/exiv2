@@ -140,7 +140,8 @@ IF( MINGW OR UNIX )
 				${CMAKE_CURRENT_SOURCE_DIR}/xmpsdk/source/XMPCore/WXMPIterator.cpp
 				${CMAKE_CURRENT_SOURCE_DIR}/xmpsdk/source/XMPCore/WXMPMeta.cpp
 				${CMAKE_CURRENT_SOURCE_DIR}/xmpsdk/source/XMPCore/WXMPUtils.cpp
-				${CMAKE_CURRENT_SOURCE_DIR}/xmpsdk/source/common/XML_Node.cpp
+                                ${CMAKE_CURRENT_SOURCE_DIR}/xmpsdk/source/common/XML_Node.cpp
+                                ${CMAKE_CURRENT_SOURCE_DIR}/xmpsdk/source/common/XMP_LibUtils.cpp
 				${CMAKE_CURRENT_SOURCE_DIR}/xmpsdk/source/XMPCore/XMPCore_Impl.cpp
 				${CMAKE_CURRENT_SOURCE_DIR}/xmpsdk/source/XMPCore/XMPIterator.cpp
 				${CMAKE_CURRENT_SOURCE_DIR}/xmpsdk/source/XMPCore/XMPMeta-GetSet.cpp

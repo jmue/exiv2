@@ -25,11 +25,12 @@
 using namespace std;
 
 #if XMP_WinBuild
+#ifdef _MSC_VER
 	#pragma warning ( disable : 4533 )	// initialization of '...' is skipped by 'goto ...'
 	#pragma warning ( disable : 4702 )	// unreachable code
 	#pragma warning ( disable : 4800 )	// forcing value to bool 'true' or 'false' (performance warning)
 #endif
-
+#endif
 
 // *** Use the XMP_PropIsXyz (Schema, Simple, Struct, Array, ...) macros
 // *** Add debug codegen checks, e.g. that typical masking operations really work
@@ -42,8 +43,6 @@ using namespace std;
 
 static const char * kPacketHeader  = "<?xpacket begin=\"\xEF\xBB\xBF\" id=\"W5M0MpCehiHzreSzNTczkc9d\"?>";
 static const char * kPacketTrailer = "<?xpacket end=\"w\"?>";	// ! The w/r is at [size-4].
-
-static const char * kTXMP_SchemaGroup = "XMP_SchemaGroup";
 
 static const char * kRDF_XMPMetaStart = "<x:xmpmeta xmlns:x=\"adobe:ns:meta/\" x:xmptk=\"";
 static const char * kRDF_XMPMetaEnd   = "</x:xmpmeta>";
@@ -58,19 +57,10 @@ static const char * kRDF_StructStart  = "<rdf:Description>";
 static const char * kRDF_StructEnd    = "</rdf:Description>";
 
 static const char * kRDF_BagStart     = "<rdf:Bag>";
-static const char * kRDF_BagEnd       = "</rdf:Bag>";
-
-static const char * kRDF_SeqStart     = "<rdf:Seq>";
-static const char * kRDF_SeqEnd       = "</rdf:Seq>";
-
-static const char * kRDF_AltStart     = "<rdf:Alt>";
-static const char * kRDF_AltEnd       = "</rdf:Alt>";
 
 static const char * kRDF_ItemStart    = "<rdf:li>";
-static const char * kRDF_ItemEnd      = "</rdf:li>";
 
 static const char * kRDF_ValueStart   = "<rdf:value>";
-static const char * kRDF_ValueEnd     = "</rdf:value>";
 
 
 // =================================================================================================

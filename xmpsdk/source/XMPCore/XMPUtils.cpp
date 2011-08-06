@@ -24,8 +24,10 @@
 #include <stdio.h>	// For snprintf.
 
 #if XMP_WinBuild
+#ifdef _MSC_VER
 	#pragma warning ( disable : 4800 )	// forcing value to bool 'true' or 'false' (performance warning)
 	#pragma warning ( disable : 4996 )	// '...' was declared deprecated
+#endif
 #endif
 
 // =================================================================================================
@@ -325,21 +327,21 @@ static void FormatFullDateTime ( XMP_DateTime & tempDate, char * buffer, size_t 
 
 		// Output YYYY-MM-DDThh:mmTZD.
 		snprintf ( buffer, bufferLen, "%.4d-%02d-%02dT%02d:%02d",	// AUDIT: Callers pass sizeof(buffer).
-				   tempDate.year, tempDate.month, tempDate.day, tempDate.hour, tempDate.minute );
+                           static_cast<int>(tempDate.year), static_cast<int>(tempDate.month), static_cast<int>(tempDate.day), static_cast<int>(tempDate.hour), static_cast<int>(tempDate.minute) );
 
 	} else if ( tempDate.nanoSecond == 0  ) {
 
 		// Output YYYY-MM-DDThh:mm:ssTZD.
 		snprintf ( buffer, bufferLen, "%.4d-%02d-%02dT%02d:%02d:%02d",	// AUDIT: Callers pass sizeof(buffer).
-				   tempDate.year, tempDate.month, tempDate.day,
-				   tempDate.hour, tempDate.minute, tempDate.second );
+                           static_cast<int>(tempDate.year), static_cast<int>(tempDate.month), static_cast<int>(tempDate.day),
+                           static_cast<int>(tempDate.hour), static_cast<int>(tempDate.minute), static_cast<int>(tempDate.second) );
 
 	} else {
 
 		// Output YYYY-MM-DDThh:mm:ss.sTZD.
 		snprintf ( buffer, bufferLen, "%.4d-%02d-%02dT%02d:%02d:%02d.%09d", // AUDIT: Callers pass sizeof(buffer).
-				   tempDate.year, tempDate.month, tempDate.day,
-				   tempDate.hour, tempDate.minute, tempDate.second, tempDate.nanoSecond );
+                           static_cast<int>(tempDate.year), static_cast<int>(tempDate.month), static_cast<int>(tempDate.day),
+                           static_cast<int>(tempDate.hour), static_cast<int>(tempDate.minute), static_cast<int>(tempDate.second), static_cast<int>(tempDate.nanoSecond) );
 		for ( size_t i = strlen(buffer)-1; buffer[i] == '0'; --i ) buffer[i] = 0;	// Trim excess digits.
 
 	}
@@ -531,7 +533,8 @@ static size_t MoveLargestProperty ( XMPMeta & stdXMP, XMPMeta * extXMP, PropSize
 		printf ( "  Move %s, %d bytes\n", propName, propSize );
 	#endif
 
-	bool moved = MoveOneProperty ( stdXMP, extXMP, schemaURI, propName ); 
+    bool moved = false;
+	moved = MoveOneProperty ( stdXMP, extXMP, schemaURI, propName );
 	XMP_Assert ( moved );
 
 	propSizes.erase ( lastPos );
@@ -1007,9 +1010,9 @@ XMPUtils::ConvertToInt ( XMP_StringPtr strValue )
 	XMP_Int32 result;
 	
 	if ( ! XMP_LitNMatch ( strValue, "0x", 2 ) ) {
-		count = sscanf ( strValue, "%d%c", &result, &nextCh );
+            count = sscanf ( strValue, "%d%c", (int*)&result, &nextCh );
 	} else {
-		count = sscanf ( strValue, "%x%c", &result, &nextCh );
+            count = sscanf ( strValue, "%x%c", (unsigned int*)&result, &nextCh );
 	}
 
 	if ( count != 1 ) XMP_Throw ( "Invalid integer string", kXMPErr_BadParam );
@@ -1653,7 +1656,7 @@ XMPUtils::PackageForJPEG ( const XMPMeta & origXMP,
 	// Adjust the standard XMP padding to be up to 2KB.
 
 	XMP_Assert ( (stdStr->size() > kTrailerLen) && (stdStr->size() <= kStdXMPLimit) );
-	const char * packetEnd = stdStr->c_str() + stdStr->size() - kTrailerLen;
+        const char * packetEnd = stdStr->c_str() + stdStr->size() - kTrailerLen;
 	XMP_Assert ( XMP_LitMatch ( packetEnd, kPacketTrailer ) );
 
 	size_t extraPadding = kStdXMPLimit - stdStr->size();	// ! Do this before erasing the trailer.

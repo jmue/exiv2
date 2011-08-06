@@ -2,7 +2,7 @@
 #define __TXMPMeta_hpp__    1
 
 #if ( ! __XMP_hpp__ )
-    #error "Do not directly include, use XMP.hpp"
+    #error "Do not directly include, use XMPSDK.hpp"
 #endif
 
 // =================================================================================================
@@ -20,7 +20,7 @@
 ///
 /// \c TXMPMeta is the template class providing the core services of the XMP Toolkit. It must be
 /// instantiated with a string class such as \c std::string. Read the Toolkit Overview for
-/// information about the overall architecture of the XMP API, and the documentation for \c XMP.hpp
+/// information about the overall architecture of the XMP API, and the documentation for \c XMPSDK.hpp
 /// for specific instantiation instructions. Please that you MUST NOT derive a class from this class,
 /// consider this class FINAL, use it directly. [1279031]
 ///
@@ -33,7 +33,7 @@
 ///
 /// \c TXMPMeta is the template class providing the core services of the XMP Toolkit. It should be
 /// instantiated with a string class such as \c std::string. Read the Toolkit Overview for
-/// information about the overall architecture of the XMP API, and the documentation for \c XMP.hpp
+/// information about the overall architecture of the XMP API, and the documentation for \c XMPSDK.hpp
 /// for specific instantiation instructions.
 ///
 /// Access these functions through the concrete class, \c SXMPMeta.
@@ -273,8 +273,8 @@ public:
     /// @note No checking is done on either the URI or the prefix.  */
 
     static bool RegisterNamespace ( XMP_StringPtr namespaceURI,
-                        			XMP_StringPtr suggestedPrefix,
-                       				tStringObj *  registeredPrefix );
+                                                XMP_StringPtr suggestedPrefix,
+                                                tStringObj *  registeredPrefix );
 
     // ---------------------------------------------------------------------------------------------
     /// @brief \c GetNamespacePrefix() obtains the prefix for a registered namespace URI, and

@@ -469,8 +469,8 @@ static const char * kTenSpaces = "          ";
 
 #define OutProcString(str)	{ XMP_Status status = (*outProc) ( refCon, (str).c_str(), (XMP_StringLen)(str).size() );  if ( status != 0 ) return; }
 
-#define OutProcDecInt(num)	{ snprintf ( buffer, sizeof(buffer), "%ld", (long)(num) ); /* AUDIT: Using sizeof for snprintf length is safe */	\
-							  XMP_Status status = (*outProc) ( refCon, buffer, (XMP_StringLen)strlen(buffer) );  if ( status != 0 ) return; }
+#define OutProcULong(num)	{ snprintf ( buffer, sizeof(buffer), "%lu", (num) ); /* AUDIT: Using sizeof for snprintf length is safe */ \
+                                                          XMP_Status status = (*outProc) ( refCon, buffer, strlen(buffer) );  if ( status != 0 ) return; }
 
 #define OutProcHexInt(num)	{ snprintf ( buffer, sizeof(buffer), "%lX", (long)(num) ); /* AUDIT: Using sizeof for snprintf length is safe */	\
 							  XMP_Status status = (*outProc) ( refCon, buffer, (XMP_StringLen)strlen(buffer) );  if ( status != 0 ) return; }

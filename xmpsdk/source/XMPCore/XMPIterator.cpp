@@ -15,9 +15,11 @@
 #include <stdio.h>	// For snprintf.
 
 #if XMP_WinBuild
-	#pragma warning ( disable : 4702 )	// unreachable code
-	#pragma warning ( disable : 4800 )	// forcing value to bool 'true' or 'false' (performance warning)
-	#pragma warning ( disable : 4996 )	// '...' was declared deprecated
+    #ifdef _MSC_VER
+        #pragma warning ( disable : 4702 )	// unreachable code
+        #pragma warning ( disable : 4800 )	// forcing value to bool 'true' or 'false' (performance warning)
+        #pragma warning ( disable : 4996 )	// '...' was declared deprecated
+    #endif
 #endif
 
 // =================================================================================================
@@ -115,7 +117,7 @@ AddNodeOffspring ( IterInfo & info, IterNode & iterParent, const XMP_Node * xmpP
 				currPath += xmpChild->name;
 			} else {
 				char buffer [32];	// AUDIT: Using sizeof(buffer) below for snprintf length is safe.
-				snprintf ( buffer, sizeof(buffer), "[%lu]", childNum+1 );	// ! XPath indices are one-based.
+				snprintf ( buffer, sizeof(buffer), "[%lu]", static_cast<unsigned long>(childNum+1) );	// ! XPath indices are one-based.
 				currPath += buffer;
 			}
 			iterParent.children.push_back ( IterNode ( xmpChild->options, currPath, leafOffset ) );
@@ -368,7 +370,7 @@ XMPIterator::Terminate() RELEASE_NO_THROW
 XMPIterator::XMPIterator ( const XMPMeta & xmpObj,
 						   XMP_StringPtr   schemaNS,
 						   XMP_StringPtr   propName,
-						   XMP_OptionBits  options ) : info(IterInfo(options,&xmpObj)), clientRefs(0)
+						   XMP_OptionBits  options ) : clientRefs(0), info(IterInfo(options,&xmpObj))
 {
 	if ( (options & kXMP_IterClassMask) != kXMP_IterProperties ) {
 		XMP_Throw ( "Unsupported iteration kind", kXMPErr_BadOptions );
@@ -488,7 +490,7 @@ XMPIterator::XMPIterator ( const XMPMeta & xmpObj,
 
 XMPIterator::XMPIterator ( XMP_StringPtr  schemaNS,
 						   XMP_StringPtr  propName,
-						   XMP_OptionBits options ) : info(IterInfo(options,0)), clientRefs(0)
+						   XMP_OptionBits options ) : clientRefs(0), info(IterInfo(options,0))
 {
 
 	XMP_Throw ( "Unimplemented XMPIterator constructor for global tables", kXMPErr_Unimplemented );
