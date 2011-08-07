@@ -726,70 +726,70 @@ XMPMeta::Initialize()
 	
 	InitializeUnicodeConversions();
 	
-        // Register standard namespaces and aliases.
+	// Register standard namespaces and aliases.
+	
+	XMP_StringPtr	voidPtr;
+	XMP_StringLen	voidLen;
+	
+	(void) RegisterNamespace ( kXMP_NS_XML, "xml", &voidPtr, &voidLen );
+	(void) RegisterNamespace ( kXMP_NS_RDF, "rdf", &voidPtr, &voidLen );
+	(void) RegisterNamespace ( kXMP_NS_DC, "dc", &voidPtr, &voidLen );
 
-        XMP_StringPtr	voidPtr;
-        XMP_StringLen	voidLen;
+	(void) RegisterNamespace ( kXMP_NS_XMP, "xmp", &voidPtr, &voidLen );
+	(void) RegisterNamespace ( kXMP_NS_PDF, "pdf", &voidPtr, &voidLen );
+	(void) RegisterNamespace ( kXMP_NS_Photoshop, "photoshop", &voidPtr, &voidLen );
+	(void) RegisterNamespace ( kXMP_NS_PSAlbum, "album", &voidPtr, &voidLen );
+	(void) RegisterNamespace ( kXMP_NS_EXIF, "exif", &voidPtr, &voidLen );
+	(void) RegisterNamespace ( kXMP_NS_EXIF_Aux, "aux", &voidPtr, &voidLen );
+	(void) RegisterNamespace ( kXMP_NS_TIFF, "tiff", &voidPtr, &voidLen );
+	(void) RegisterNamespace ( kXMP_NS_PNG, "png", &voidPtr, &voidLen );
+	(void) RegisterNamespace ( kXMP_NS_JPEG, "jpeg", &voidPtr, &voidLen );
+	(void) RegisterNamespace ( kXMP_NS_JP2K, "jp2k", &voidPtr, &voidLen );
+	(void) RegisterNamespace ( kXMP_NS_CameraRaw, "crs", &voidPtr, &voidLen );
+	(void) RegisterNamespace ( kXMP_NS_ASF, "asf", &voidPtr, &voidLen );
+	(void) RegisterNamespace ( kXMP_NS_WAV, "wav", &voidPtr, &voidLen );
 
-        (void) RegisterNamespace ( kXMP_NS_XML, "xml", &voidPtr, &voidLen );
-        (void) RegisterNamespace ( kXMP_NS_RDF, "rdf", &voidPtr, &voidLen );
-        (void) RegisterNamespace ( kXMP_NS_DC, "dc", &voidPtr, &voidLen );
+	(void) RegisterNamespace ( kXMP_NS_AdobeStockPhoto, "bmsp", &voidPtr, &voidLen );
+	(void) RegisterNamespace ( kXMP_NS_CreatorAtom, "creatorAtom", &voidPtr, &voidLen );
 
-        (void) RegisterNamespace ( kXMP_NS_XMP, "xmp", &voidPtr, &voidLen );
-        (void) RegisterNamespace ( kXMP_NS_PDF, "pdf", &voidPtr, &voidLen );
-        (void) RegisterNamespace ( kXMP_NS_Photoshop, "photoshop", &voidPtr, &voidLen );
-        (void) RegisterNamespace ( kXMP_NS_PSAlbum, "album", &voidPtr, &voidLen );
-        (void) RegisterNamespace ( kXMP_NS_EXIF, "exif", &voidPtr, &voidLen );
-        (void) RegisterNamespace ( kXMP_NS_EXIF_Aux, "aux", &voidPtr, &voidLen );
-        (void) RegisterNamespace ( kXMP_NS_TIFF, "tiff", &voidPtr, &voidLen );
-        (void) RegisterNamespace ( kXMP_NS_PNG, "png", &voidPtr, &voidLen );
-        (void) RegisterNamespace ( kXMP_NS_JPEG, "jpeg", &voidPtr, &voidLen );
-        (void) RegisterNamespace ( kXMP_NS_JP2K, "jp2k", &voidPtr, &voidLen );
-        (void) RegisterNamespace ( kXMP_NS_CameraRaw, "crs", &voidPtr, &voidLen );
-        (void) RegisterNamespace ( kXMP_NS_ASF, "asf", &voidPtr, &voidLen );
-        (void) RegisterNamespace ( kXMP_NS_WAV, "wav", &voidPtr, &voidLen );
+	(void) RegisterNamespace ( kXMP_NS_XMP_Rights, "xmpRights", &voidPtr, &voidLen );
+	(void) RegisterNamespace ( kXMP_NS_XMP_MM, "xmpMM", &voidPtr, &voidLen );
+	(void) RegisterNamespace ( kXMP_NS_XMP_BJ, "xmpBJ", &voidPtr, &voidLen );
+	(void) RegisterNamespace ( kXMP_NS_XMP_Note, "xmpNote", &voidPtr, &voidLen );
 
-        (void) RegisterNamespace ( kXMP_NS_AdobeStockPhoto, "bmsp", &voidPtr, &voidLen );
-        (void) RegisterNamespace ( kXMP_NS_CreatorAtom, "creatorAtom", &voidPtr, &voidLen );
-
-        (void) RegisterNamespace ( kXMP_NS_XMP_Rights, "xmpRights", &voidPtr, &voidLen );
-        (void) RegisterNamespace ( kXMP_NS_XMP_MM, "xmpMM", &voidPtr, &voidLen );
-        (void) RegisterNamespace ( kXMP_NS_XMP_BJ, "xmpBJ", &voidPtr, &voidLen );
-        (void) RegisterNamespace ( kXMP_NS_XMP_Note, "xmpNote", &voidPtr, &voidLen );
-
-        (void) RegisterNamespace ( kXMP_NS_DM, "xmpDM", &voidPtr, &voidLen );
+	(void) RegisterNamespace ( kXMP_NS_DM, "xmpDM", &voidPtr, &voidLen );
 	(void) RegisterNamespace ( kXMP_NS_Script, "xmpScript", &voidPtr, &voidLen );
 	(void) RegisterNamespace ( kXMP_NS_BWF, "bext", &voidPtr, &voidLen );
-        (void) RegisterNamespace ( kXMP_NS_XMP_Text, "xmpT", &voidPtr, &voidLen );
-        (void) RegisterNamespace ( kXMP_NS_XMP_PagedFile, "xmpTPg", &voidPtr, &voidLen );
-        (void) RegisterNamespace ( kXMP_NS_XMP_Graphics, "xmpG", &voidPtr, &voidLen );
-        (void) RegisterNamespace ( kXMP_NS_XMP_Image, "xmpGImg", &voidPtr, &voidLen );
+	(void) RegisterNamespace ( kXMP_NS_XMP_Text, "xmpT", &voidPtr, &voidLen );
+	(void) RegisterNamespace ( kXMP_NS_XMP_PagedFile, "xmpTPg", &voidPtr, &voidLen );
+	(void) RegisterNamespace ( kXMP_NS_XMP_Graphics, "xmpG", &voidPtr, &voidLen );
+	(void) RegisterNamespace ( kXMP_NS_XMP_Image, "xmpGImg", &voidPtr, &voidLen );
 
-        (void) RegisterNamespace ( kXMP_NS_XMP_Font, "stFnt", &voidPtr, &voidLen );
-        (void) RegisterNamespace ( kXMP_NS_XMP_Dimensions, "stDim", &voidPtr, &voidLen );
-        (void) RegisterNamespace ( kXMP_NS_XMP_ResourceEvent, "stEvt", &voidPtr, &voidLen );
-        (void) RegisterNamespace ( kXMP_NS_XMP_ResourceRef, "stRef", &voidPtr, &voidLen );
-        (void) RegisterNamespace ( kXMP_NS_XMP_ST_Version, "stVer", &voidPtr, &voidLen );
-        (void) RegisterNamespace ( kXMP_NS_XMP_ST_Job, "stJob", &voidPtr, &voidLen );
-        (void) RegisterNamespace ( kXMP_NS_XMP_ManifestItem, "stMfs", &voidPtr, &voidLen );
+	(void) RegisterNamespace ( kXMP_NS_XMP_Font, "stFnt", &voidPtr, &voidLen );
+	(void) RegisterNamespace ( kXMP_NS_XMP_Dimensions, "stDim", &voidPtr, &voidLen );
+	(void) RegisterNamespace ( kXMP_NS_XMP_ResourceEvent, "stEvt", &voidPtr, &voidLen );
+	(void) RegisterNamespace ( kXMP_NS_XMP_ResourceRef, "stRef", &voidPtr, &voidLen );
+	(void) RegisterNamespace ( kXMP_NS_XMP_ST_Version, "stVer", &voidPtr, &voidLen );
+	(void) RegisterNamespace ( kXMP_NS_XMP_ST_Job, "stJob", &voidPtr, &voidLen );
+	(void) RegisterNamespace ( kXMP_NS_XMP_ManifestItem, "stMfs", &voidPtr, &voidLen );
 
-        (void) RegisterNamespace ( kXMP_NS_XMP_IdentifierQual, "xmpidq", &voidPtr, &voidLen );
+	(void) RegisterNamespace ( kXMP_NS_XMP_IdentifierQual, "xmpidq", &voidPtr, &voidLen );
 
-        (void) RegisterNamespace ( kXMP_NS_IPTCCore, "Iptc4xmpCore", &voidPtr, &voidLen );
-        (void) RegisterNamespace ( kXMP_NS_DICOM, "DICOM", &voidPtr, &voidLen );
+	(void) RegisterNamespace ( kXMP_NS_IPTCCore, "Iptc4xmpCore", &voidPtr, &voidLen );
+	(void) RegisterNamespace ( kXMP_NS_DICOM, "DICOM", &voidPtr, &voidLen );
 
-        (void) RegisterNamespace ( kXMP_NS_PDFA_Schema, "pdfaSchema", &voidPtr, &voidLen );
-        (void) RegisterNamespace ( kXMP_NS_PDFA_Property, "pdfaProperty", &voidPtr, &voidLen );
-        (void) RegisterNamespace ( kXMP_NS_PDFA_Type, "pdfaType", &voidPtr, &voidLen );
-        (void) RegisterNamespace ( kXMP_NS_PDFA_Field, "pdfaField", &voidPtr, &voidLen );
-        (void) RegisterNamespace ( kXMP_NS_PDFA_ID, "pdfaid", &voidPtr, &voidLen );
-        (void) RegisterNamespace ( kXMP_NS_PDFA_Extension, "pdfaExtension", &voidPtr, &voidLen );
+	(void) RegisterNamespace ( kXMP_NS_PDFA_Schema, "pdfaSchema", &voidPtr, &voidLen );
+	(void) RegisterNamespace ( kXMP_NS_PDFA_Property, "pdfaProperty", &voidPtr, &voidLen );
+	(void) RegisterNamespace ( kXMP_NS_PDFA_Type, "pdfaType", &voidPtr, &voidLen );
+	(void) RegisterNamespace ( kXMP_NS_PDFA_Field, "pdfaField", &voidPtr, &voidLen );
+	(void) RegisterNamespace ( kXMP_NS_PDFA_ID, "pdfaid", &voidPtr, &voidLen );
+	(void) RegisterNamespace ( kXMP_NS_PDFA_Extension, "pdfaExtension", &voidPtr, &voidLen );
 
-        (void) RegisterNamespace ( kXMP_NS_PDFX, "pdfx", &voidPtr, &voidLen );
-        (void) RegisterNamespace ( kXMP_NS_PDFX_ID, "pdfxid", &voidPtr, &voidLen );
+	(void) RegisterNamespace ( kXMP_NS_PDFX, "pdfx", &voidPtr, &voidLen );
+	(void) RegisterNamespace ( kXMP_NS_PDFX_ID, "pdfxid", &voidPtr, &voidLen );
 	
-        (void) RegisterNamespace ( "adobe:ns:meta/", "x", &voidPtr, &voidLen );
-        (void) RegisterNamespace ( "http://ns.adobe.com/iX/1.0/", "iX", &voidPtr, &voidLen );
+	(void) RegisterNamespace ( "adobe:ns:meta/", "x", &voidPtr, &voidLen );
+	(void) RegisterNamespace ( "http://ns.adobe.com/iX/1.0/", "iX", &voidPtr, &voidLen );
 
 // 06-Oct-07, ahu: Do not use aliases. They result in unexpected behaviour.
 //	XMPMeta::RegisterStandardAliases ( "" );
