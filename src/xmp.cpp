@@ -403,13 +403,15 @@ namespace Exiv2 {
             xmpLockFct_ = xmpLockFct;
             pLockData_ = pLockData;
             initialized_ = SXMPMeta::Initialize();
-            SXMPMeta::RegisterNamespace("http://www.digikam.org/ns/1.0/", "digiKam");
-            SXMPMeta::RegisterNamespace("http://www.digikam.org/ns/kipi/1.0/", "kipi");
-            SXMPMeta::RegisterNamespace("http://ns.microsoft.com/photo/1.0/", "MicrosoftPhoto");
-            SXMPMeta::RegisterNamespace("http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "iptcExt");
-            SXMPMeta::RegisterNamespace("http://ns.useplus.org/ldf/xmp/1.0/", "plus");
-            SXMPMeta::RegisterNamespace("http://ns.iview-multimedia.com/mediapro/1.0/", "mediapro");
-            SXMPMeta::RegisterNamespace("http://ns.microsoft.com/expressionmedia/1.0/", "expressionmedia");
+
+            TXMP_STRING_TYPE ss;
+            (void) SXMPMeta::RegisterNamespace("http://www.digikam.org/ns/1.0/", "digiKam", &ss);
+            (void) SXMPMeta::RegisterNamespace("http://www.digikam.org/ns/kipi/1.0/", "kipi", &ss);
+            (void) SXMPMeta::RegisterNamespace("http://ns.microsoft.com/photo/1.0/", "MicrosoftPhoto", &ss);
+            (void) SXMPMeta::RegisterNamespace("http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "iptcExt", &ss);
+            (void) SXMPMeta::RegisterNamespace("http://ns.useplus.org/ldf/xmp/1.0/", "plus", &ss);
+            (void) SXMPMeta::RegisterNamespace("http://ns.iview-multimedia.com/mediapro/1.0/", "mediapro", &ss);
+            (void) SXMPMeta::RegisterNamespace("http://ns.microsoft.com/expressionmedia/1.0/", "expressionmedia", &ss);
 #else
             initialized_ = true;
 #endif
@@ -438,7 +440,8 @@ namespace Exiv2 {
             initialize();
             AutoLock autoLock(xmpLockFct_, pLockData_);
             SXMPMeta::DeleteNamespace(ns.c_str());
-            SXMPMeta::RegisterNamespace(ns.c_str(), prefix.c_str());
+            TXMP_STRING_TYPE ss;
+            (void) SXMPMeta::RegisterNamespace(ns.c_str(), prefix.c_str(), &ss);
         }
         catch (const XMP_Error& e) {
             throw Error(40, e.GetID(), e.GetErrMsg());
@@ -819,7 +822,7 @@ namespace {
         if (flags & Exiv2::XmpParser::useCompactFormat)    var |= kXMP_UseCompactFormat;
         if (flags & Exiv2::XmpParser::includeThumbnailPad) var |= kXMP_IncludeThumbnailPad;
         if (flags & Exiv2::XmpParser::exactPacketLength)   var |= kXMP_ExactPacketLength;
-        if (flags & Exiv2::XmpParser::writeAliasComments)  var |= kXMP_WriteAliasComments;
+        //if (flags & Exiv2::XmpParser::writeAliasComments)  var |= kXMP_WriteAliasComments;
         if (flags & Exiv2::XmpParser::omitAllFormatting)   var |= kXMP_OmitAllFormatting;
         return var;
     }
