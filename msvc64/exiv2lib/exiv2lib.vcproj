@@ -44,11 +44,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-<<<<<<< HEAD
-				AdditionalIncludeDirectories="../include;../include/exiv2;../../xmpsdk/include;../../xmpsdk/src;../../../expat-2.0.1/lib;../../../zlib-1.2.5;"
-=======
-				AdditionalIncludeDirectories="../include;../include/exiv2;../../xmpsdk/build;../../xmpsdk/public/include;../../xmpsdk/third-party/MD5;../../xmpsdk/source/common;../../xmpsdk/source/XMPCore;../../../expat-2.0.1/lib;../../../zlib-1.2.3;"
->>>>>>> xmpsdk_integration
+				AdditionalIncludeDirectories="../include;../include/exiv2;../../xmpsdk/build;../../xmpsdk/public/include;../../xmpsdk/third-party/MD5;../../xmpsdk/source/common;../../xmpsdk/source/XMPCore;../../../expat-2.0.1/lib;../../../zlib-1.2.5;"
 				PreprocessorDefinitions="WIN32;_DEBUG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -119,11 +115,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-<<<<<<< HEAD
-				AdditionalIncludeDirectories="../include;../include/exiv2;../../xmpsdk/include;../../xmpsdk/src;../../../expat-2.0.1/lib;../../../zlib-1.2.5;"
-=======
-				AdditionalIncludeDirectories="../include;../include/exiv2;../../xmpsdk/build;../../xmpsdk/public/include;../../xmpsdk/third-party/MD5;../../xmpsdk/source/common;../../xmpsdk/source/XMPCore;../../../expat-2.0.1/lib;../../../zlib-1.2.3;"
->>>>>>> xmpsdk_integration
+				AdditionalIncludeDirectories="../include;../include/exiv2;../../xmpsdk/build;../../xmpsdk/public/include;../../xmpsdk/third-party/MD5;../../xmpsdk/source/common;../../xmpsdk/source/XMPCore;../../../expat-2.0.1/lib;../../../zlib-1.2.5;"
 				PreprocessorDefinitions="WIN32;_DEBUG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -193,11 +185,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-<<<<<<< HEAD
-				AdditionalIncludeDirectories="../include;../include/exiv2;../../xmpsdk/include;../../xmpsdk/src;../../../expat-2.0.1/lib;../../../zlib-1.2.5;"
-=======
-				AdditionalIncludeDirectories="../include;../include/exiv2;../../xmpsdk/build;../../xmpsdk/public/include;../../xmpsdk/third-party/MD5;../../xmpsdk/source/common;../../xmpsdk/source/XMPCore;../../../expat-2.0.1/lib;../../../zlib-1.2.3;"
->>>>>>> xmpsdk_integration
+				AdditionalIncludeDirectories="../include;../include/exiv2;../../xmpsdk/build;../../xmpsdk/public/include;../../xmpsdk/third-party/MD5;../../xmpsdk/source/common;../../xmpsdk/source/XMPCore;../../../expat-2.0.1/lib;../../../zlib-1.2.5;"
 				PreprocessorDefinitions="WIN32;_NDEBUG"
 				RuntimeLibrary="0"
 				RuntimeTypeInfo="true"
@@ -265,11 +253,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-<<<<<<< HEAD
-				AdditionalIncludeDirectories="../include;../include/exiv2;../../xmpsdk/include;../../xmpsdk/src;../../../expat-2.0.1/lib;../../../zlib-1.2.5;"
-=======
-				AdditionalIncludeDirectories="../include;../include/exiv2;../../xmpsdk/build;../../xmpsdk/public/include;../../xmpsdk/third-party/MD5;../../xmpsdk/source/common;../../xmpsdk/source/XMPCore;../../../expat-2.0.1/lib;../../../zlib-1.2.3;"
->>>>>>> xmpsdk_integration
+				AdditionalIncludeDirectories="../include;../include/exiv2;../../xmpsdk/build;../../xmpsdk/public/include;../../xmpsdk/third-party/MD5;../../xmpsdk/source/common;../../xmpsdk/source/XMPCore;../../../expat-2.0.1/lib;../../../zlib-1.2.5;"
 				PreprocessorDefinitions="WIN32;_NDEBUG"
 				RuntimeLibrary="0"
 				RuntimeTypeInfo="true"
@@ -337,11 +321,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-<<<<<<< HEAD
-				AdditionalIncludeDirectories="../include;../include/exiv2;../../xmpsdk/include;../../xmpsdk/src;../../../expat-2.0.1/lib;../../../zlib-1.2.5;"
-=======
-				AdditionalIncludeDirectories="../include;../include/exiv2;../../xmpsdk/build;../../xmpsdk/public/include;../../xmpsdk/third-party/MD5;../../xmpsdk/source/common;../../xmpsdk/source/XMPCore;../../../expat-2.0.1/lib;../../../zlib-1.2.3;"
->>>>>>> xmpsdk_integration
+				AdditionalIncludeDirectories="../include;../include/exiv2;../../xmpsdk/build;../../xmpsdk/public/include;../../xmpsdk/third-party/MD5;../../xmpsdk/source/common;../../xmpsdk/source/XMPCore;../../../expat-2.0.1/lib;../../../zlib-1.2.5;"
 				PreprocessorDefinitions="WIN32;_DEBUG;EXV_HAVE_DLL;EXV_BUILDING_LIB"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -428,11 +408,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-<<<<<<< HEAD
-				AdditionalIncludeDirectories="../include;../include/exiv2;../../xmpsdk/include;../../xmpsdk/src;../../../expat-2.0.1/lib;../../../zlib-1.2.5;"
-=======
-				AdditionalIncludeDirectories="../include;../include/exiv2;../../xmpsdk/build;../../xmpsdk/public/include;../../xmpsdk/third-party/MD5;../../xmpsdk/source/common;../../xmpsdk/source/XMPCore;../../../expat-2.0.1/lib;../../../zlib-1.2.3;"
->>>>>>> xmpsdk_integration
+				AdditionalIncludeDirectories="../include;../include/exiv2;../../xmpsdk/build;../../xmpsdk/public/include;../../xmpsdk/third-party/MD5;../../xmpsdk/source/common;../../xmpsdk/source/XMPCore;../../../expat-2.0.1/lib;../../../zlib-1.2.5;"
 				PreprocessorDefinitions="WIN32;_DEBUG;EXV_HAVE_DLL;EXV_BUILDING_LIB"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -518,11 +494,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="1"
-<<<<<<< HEAD
-				AdditionalIncludeDirectories="../include;../include/exiv2;../../xmpsdk/include;../../xmpsdk/src;../../../expat-2.0.1/lib;../../../zlib-1.2.5;"
-=======
-				AdditionalIncludeDirectories="../include;../include/exiv2;../../xmpsdk/build;../../xmpsdk/public/include;../../xmpsdk/third-party/MD5;../../xmpsdk/source/common;../../xmpsdk/source/XMPCore;../../../expat-2.0.1/lib;../../../zlib-1.2.3;"
->>>>>>> xmpsdk_integration
+				AdditionalIncludeDirectories="../include;../include/exiv2;../../xmpsdk/build;../../xmpsdk/public/include;../../xmpsdk/third-party/MD5;../../xmpsdk/source/common;../../xmpsdk/source/XMPCore;../../../expat-2.0.1/lib;../../../zlib-1.2.5;"
 				PreprocessorDefinitions="WIN32;_NDEBUG;EXV_HAVE_DLL;EXV_BUILDING_LIB"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="0"
@@ -609,11 +581,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="1"
-<<<<<<< HEAD
-				AdditionalIncludeDirectories="../include;../include/exiv2;../../xmpsdk/include;../../xmpsdk/src;../../../expat-2.0.1/lib;../../../zlib-1.2.5;"
-=======
-				AdditionalIncludeDirectories="../include;../include/exiv2;../../xmpsdk/build;../../xmpsdk/public/include;../../xmpsdk/third-party/MD5;../../xmpsdk/source/common;../../xmpsdk/source/XMPCore;../../../expat-2.0.1/lib;../../../zlib-1.2.3;"
->>>>>>> xmpsdk_integration
+				AdditionalIncludeDirectories="../include;../include/exiv2;../../xmpsdk/build;../../xmpsdk/public/include;../../xmpsdk/third-party/MD5;../../xmpsdk/source/common;../../xmpsdk/source/XMPCore;../../../expat-2.0.1/lib;../../../zlib-1.2.5;"
 				PreprocessorDefinitions="WIN32;_NDEBUG;EXV_HAVE_DLL;EXV_BUILDING_LIB"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="0"
