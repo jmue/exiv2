@@ -132,24 +132,23 @@ SET( INSTALL_TARGET_STANDARD_ARGS
 
 # add sources from XMPSDK directory - this needs to be done here
 IF( MINGW OR UNIX )
-	include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/xmpsdk/public/include ${CMAKE_CURRENT_SOURCE_DIR}/xmpsdk/build ${CMAKE_CURRENT_SOURCE_DIR}/xmpsdk/source/common ${CMAKE_CURRENT_SOURCE_DIR}/xmpsdk/third-party/MD5 )
-	SET( XMPSRC ${CMAKE_CURRENT_SOURCE_DIR}/xmpsdk/source/XMPCore/ExpatAdapter.cpp
-				${CMAKE_CURRENT_SOURCE_DIR}/xmpsdk/third-party/MD5/MD5.cpp
-				${CMAKE_CURRENT_SOURCE_DIR}/xmpsdk/source/XMPCore/ParseRDF.cpp
-				${CMAKE_CURRENT_SOURCE_DIR}/xmpsdk/source/common/UnicodeConversions.cpp
-				${CMAKE_CURRENT_SOURCE_DIR}/xmpsdk/source/XMPCore/WXMPIterator.cpp
-				${CMAKE_CURRENT_SOURCE_DIR}/xmpsdk/source/XMPCore/WXMPMeta.cpp
-				${CMAKE_CURRENT_SOURCE_DIR}/xmpsdk/source/XMPCore/WXMPUtils.cpp
-                                ${CMAKE_CURRENT_SOURCE_DIR}/xmpsdk/source/common/XML_Node.cpp
-                                ${CMAKE_CURRENT_SOURCE_DIR}/xmpsdk/source/common/XMP_LibUtils.cpp
-				${CMAKE_CURRENT_SOURCE_DIR}/xmpsdk/source/XMPCore/XMPCore_Impl.cpp
-				${CMAKE_CURRENT_SOURCE_DIR}/xmpsdk/source/XMPCore/XMPIterator.cpp
-				${CMAKE_CURRENT_SOURCE_DIR}/xmpsdk/source/XMPCore/XMPMeta-GetSet.cpp
-				${CMAKE_CURRENT_SOURCE_DIR}/xmpsdk/source/XMPCore/XMPMeta-Parse.cpp
-				${CMAKE_CURRENT_SOURCE_DIR}/xmpsdk/source/XMPCore/XMPMeta-Serialize.cpp
-				${CMAKE_CURRENT_SOURCE_DIR}/xmpsdk/source/XMPCore/XMPMeta.cpp
-				${CMAKE_CURRENT_SOURCE_DIR}/xmpsdk/source/XMPCore/XMPUtils-FileInfo.cpp
-				${CMAKE_CURRENT_SOURCE_DIR}/xmpsdk/source/XMPCore/XMPUtils.cpp
+	SET( XMPSRC ${CMAKE_CURRENT_SOURCE_DIR}/xmpsdk/src/ExpatAdapter.cpp
+				${CMAKE_CURRENT_SOURCE_DIR}/xmpsdk/src/MD5.cpp
+				${CMAKE_CURRENT_SOURCE_DIR}/xmpsdk/src/ParseRDF.cpp
+				${CMAKE_CURRENT_SOURCE_DIR}/xmpsdk/src/UnicodeConversions.cpp
+				${CMAKE_CURRENT_SOURCE_DIR}/xmpsdk/src/WXMPIterator.cpp
+				${CMAKE_CURRENT_SOURCE_DIR}/xmpsdk/src/WXMPMeta.cpp
+				${CMAKE_CURRENT_SOURCE_DIR}/xmpsdk/src/WXMPUtils.cpp
+				${CMAKE_CURRENT_SOURCE_DIR}/xmpsdk/src/XML_Node.cpp
+				${CMAKE_CURRENT_SOURCE_DIR}/xmpsdk/src/XMP_LibUtils.cpp
+				${CMAKE_CURRENT_SOURCE_DIR}/xmpsdk/src/XMPCore_Impl.cpp
+				${CMAKE_CURRENT_SOURCE_DIR}/xmpsdk/src/XMPIterator.cpp
+				${CMAKE_CURRENT_SOURCE_DIR}/xmpsdk/src/XMPMeta-GetSet.cpp
+				${CMAKE_CURRENT_SOURCE_DIR}/xmpsdk/src/XMPMeta-Parse.cpp
+				${CMAKE_CURRENT_SOURCE_DIR}/xmpsdk/src/XMPMeta-Serialize.cpp
+				${CMAKE_CURRENT_SOURCE_DIR}/xmpsdk/src/XMPMeta.cpp
+				${CMAKE_CURRENT_SOURCE_DIR}/xmpsdk/src/XMPUtils-FileInfo.cpp
+				${CMAKE_CURRENT_SOURCE_DIR}/xmpsdk/src/XMPUtils.cpp
 	   )
 ENDIF( MINGW OR UNIX )
 
