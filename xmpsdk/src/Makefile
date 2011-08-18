@@ -55,22 +55,23 @@ include $(top_srcdir)/config/config.mk
 # Source files
 
 # Add library C++ source files to this list
-CCSRC = XML_Node.cpp           \
-        XMPMeta.cpp            \
+CCSRC = ExpatAdapter.cpp       \
+        MD5.cpp                \
+        ParseRDF.cpp           \
+        UnicodeConversions.cpp \
+        WXMPIterator.cpp       \
+        WXMPMeta.cpp           \
+        WXMPUtils.cpp          \
+        XML_Node.cpp           \
+        XMPCore_Impl.cpp       \
+        XMPIterator.cpp        \
         XMPMeta-GetSet.cpp     \
         XMPMeta-Parse.cpp      \
         XMPMeta-Serialize.cpp  \
-        XMPIterator.cpp        \
-        XMPUtils.cpp           \
+        XMPMeta.cpp            \
         XMPUtils-FileInfo.cpp  \
-        XMPCore_Impl.cpp       \
-        ExpatAdapter.cpp       \
-        ParseRDF.cpp           \
-        UnicodeConversions.cpp \
-        MD5.cpp                \
-        WXMPMeta.cpp           \
-        WXMPIterator.cpp       \
-        WXMPUtils.cpp
+        XMPUtils.cpp           \
+        XMP_LibUtils.cpp
 
 # ******************************************************************************
 # Library
