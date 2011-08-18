@@ -439,7 +439,7 @@ namespace Exiv2 {
         try {
             initialize();
             AutoLock autoLock(xmpLockFct_, pLockData_);
-            SXMPMeta::DeleteNamespace(ns.c_str());
+            //SXMPMeta::DeleteNamespace(ns.c_str());
             TXMP_STRING_TYPE ss;
             (void) SXMPMeta::RegisterNamespace(ns.c_str(), prefix.c_str(), &ss);
         }
