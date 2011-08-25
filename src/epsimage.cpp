@@ -50,6 +50,7 @@ EXIV2_RCSID("@(#) $Id: epsimage.cpp $")
 // + standard includes
 #include <algorithm>
 #include <cassert>
+#include <climits>
 #include <cstring>
 #include <iostream>
 #include <sstream>
@@ -417,6 +418,8 @@ namespace {
         size_t posExiv2Version = posEndEps;
         size_t posExiv2Website = posEndEps;
         size_t posEndComments = posEndEps;
+        size_t posAi7Thumbnail = posEndEps;
+        size_t posAi7ThumbnailEndData = posEndEps;
         size_t posBeginPhotoshop = posEndEps;
         size_t posEndPhotoshop = posEndEps;
         size_t posPage = posEndEps;
@@ -424,6 +427,8 @@ namespace {
         size_t posPageTrailer = posEndEps;
         size_t posEof = posEndEps;
         std::vector<std::pair<size_t, size_t> > removableEmbeddings;
+        unsigned int depth = 0;
+        const unsigned int maxDepth = UINT_MAX;
         bool illustrator8 = false;
         bool implicitPage = false;
         bool implicitPageTrailer = false;
@@ -439,6 +444,39 @@ namespace {
             #ifdef DEBUG
             bool significantLine = true;
             #endif
+            // nested documents
+            if (posPage == posEndEps && (startsWith(line, "%%IncludeDocument:") || startsWith(line, "%%BeginDocument:"))) {
+                #ifndef SUPPRESS_WARNINGS
+                EXV_WARNING << "Nested document at invalid position: " << startPos << "\n";
+                #endif
+                throw Error(write ? 21 : 14);
+            } else if (startsWith(line, "%%BeginDocument:")) {
+                if (depth == maxDepth) {
+                    #ifndef SUPPRESS_WARNINGS
+                    EXV_WARNING << "Document too deeply nested at position: " << startPos << "\n";
+                    #endif
+                    throw Error(write ? 21 : 14);
+                }
+                depth++;
+            } else if (startsWith(line, "%%EndDocument")) {
+                if (depth == 0) {
+                    #ifndef SUPPRESS_WARNINGS
+                    EXV_WARNING << "Unmatched EndDocument at position: " << startPos << "\n";
+                    #endif
+                    throw Error(write ? 21 : 14);
+                }
+                depth--;
+            } else {
+                #ifdef DEBUG
+                significantLine = false;
+                #endif
+            }
+            #ifdef DEBUG
+            if (significantLine) {
+                EXV_DEBUG << "readWriteEpsMetadata: Found significant line \"" << line << "\" at position: " << startPos << "\n";
+            }
+            #endif
+            if (depth != 0) continue;
             // explicit "Begin" comments
             if (startsWith(line, "%%BeginPreview:")) {
                 inDefaultsPreviewPrologSetup = true;
@@ -528,9 +566,6 @@ namespace {
                 }
             }
             // remaining explicit comments
-            #ifdef DEBUG
-            significantLine = true;
-            #endif
             if (posEndComments == posEndEps && posLanguageLevel == posEndEps && startsWith(line, "%%LanguageLevel:")) {
                 posLanguageLevel = startPos;
             } else if (posEndComments == posEndEps && posContainsXmp == posEndEps && startsWith(line, "%ADO_ContainsXMP:")) {
@@ -543,6 +578,10 @@ namespace {
                 posExiv2Website = startPos;
             } else if (posEndComments == posEndEps && startsWith(line, "%%Creator: Adobe Illustrator") && firstLine == "%!PS-Adobe-3.0 EPSF-3.0") {
                 illustrator8 = true;
+            } else if (posEndComments == posEndEps && startsWith(line, "%AI7_Thumbnail:")) {
+                posAi7Thumbnail = startPos;
+            } else if (posEndComments == posEndEps && posAi7Thumbnail != posEndEps && posAi7ThumbnailEndData == posEndEps && line == "%%EndData") {
+                posAi7ThumbnailEndData = startPos;
             } else if (posEndComments == posEndEps && line == "%%EndComments") {
                 posEndComments = startPos;
             } else if (line == "%%EndPreview") {
@@ -567,17 +606,6 @@ namespace {
                 removableEmbeddings.back().second = pos;
             } else if (line == "%%EOF") {
                 posEof = startPos;
-            } else if (posPage == posEndEps && (startsWith(line, "%%IncludeDocument:") || startsWith(line, "%%BeginDocument:"))) {
-                #ifndef SUPPRESS_WARNINGS
-                EXV_WARNING << "Nested document at invalid position: " << startPos << "\n";
-                #endif
-                throw Error(write ? 21 : 14);
-            } else if (startsWith(line, "%%BeginDocument:")) {
-                // TODO: Add support for nested documents!
-                #ifndef SUPPRESS_WARNINGS
-                EXV_WARNING << "Nested documents are currently not supported. Found nested document at position: " << startPos << "\n";
-                #endif
-                throw Error(write ? 21 : 14);
             } else {
                 #ifdef DEBUG
                 significantLine = false;
@@ -588,6 +616,14 @@ namespace {
                 EXV_DEBUG << "readWriteEpsMetadata: Found significant line \"" << line << "\" at position: " << startPos << "\n";
             }
             #endif
+        }
+
+        // check for unfinished nested documents
+        if (depth != 0) {
+            #ifndef SUPPRESS_WARNINGS
+            EXV_WARNING << "Unmatched BeginDocument (" << depth << "x)\n";
+            #endif
+            throw Error(write ? 21 : 14);
         }
 
         // look for the unmarked trailers of some removable XMP embeddings
@@ -711,6 +747,45 @@ namespace {
 
             // native previews
             nativePreviews.clear();
+            if (posAi7ThumbnailEndData != posEndEps) {
+                NativePreview nativePreview;
+                std::string dummy;
+                std::string lineAi7Thumbnail;
+                const size_t posBeginData = readLine(lineAi7Thumbnail, data, posAi7Thumbnail, posEndEps);
+                std::istringstream lineStreamAi7Thumbnail(lineAi7Thumbnail);
+                lineStreamAi7Thumbnail >> dummy;
+                lineStreamAi7Thumbnail >> nativePreview.width_;
+                lineStreamAi7Thumbnail >> nativePreview.height_;
+                std::string depth;
+                lineStreamAi7Thumbnail >> depth;
+                std::string lineBeginData;
+                const size_t posAfterBeginData = readLine(lineBeginData, data, posBeginData, posEndEps);
+                std::istringstream lineStreamBeginData(lineBeginData);
+                std::string beginData;
+                lineStreamBeginData >> beginData;
+                lineStreamBeginData >> dummy;
+                std::string type;
+                lineStreamBeginData >> type;
+                nativePreview.position_ = static_cast<long>(posAfterBeginData);
+                nativePreview.size_ = posAi7ThumbnailEndData - posAfterBeginData;
+                nativePreview.filter_ = "hex-ai7thumbnail-pnm";
+                nativePreview.mimeType_ = "image/x-portable-anymap";
+                if (depth != "8") {
+                    #ifndef SUPPRESS_WARNINGS
+                    EXV_WARNING << "Unable to handle Illustrator thumbnail depth: " << depth << "\n";
+                    #endif
+                } else if (beginData != "%%BeginData:") {
+                    #ifndef SUPPRESS_WARNINGS
+                    EXV_WARNING << "Unable to handle Illustrator thumbnail data section: " << lineBeginData << "\n";
+                    #endif
+                } else if (type != "Hex") {
+                    #ifndef SUPPRESS_WARNINGS
+                    EXV_WARNING << "Unable to handle Illustrator thumbnail data type: " << type << "\n";
+                    #endif
+                } else {
+                    nativePreviews.push_back(nativePreview);
+                }
+            }
             if (posEndPhotoshop != posEndEps) {
                 NativePreview nativePreview;
                 nativePreview.position_ = static_cast<long>(posBeginPhotoshop);
@@ -827,7 +902,7 @@ namespace {
                     }
                 }
                 if (pos == posExiv2Version && posExiv2Version != posEndEps) {
-                    writeTemp(*tempIo, "%Exiv2Version: " + std::string(version()) + lineEnding);
+                    writeTemp(*tempIo, "%Exiv2Version: " + versionNumberHexString() + lineEnding);
                     skipPos = posLineEnd;
                 }
                 if (pos == posExiv2Website && posExiv2Website != posEndEps) {
@@ -845,7 +920,7 @@ namespace {
                         writeTemp(*tempIo, "%%Pages: 1" + lineEnding);
                     }
                     if (posExiv2Version == posEndEps) {
-                        writeTemp(*tempIo, "%Exiv2Version: " + std::string(version()) + lineEnding);
+                        writeTemp(*tempIo, "%Exiv2Version: " + versionNumberHexString() + lineEnding);
                     }
                     if (posExiv2Website == posEndEps) {
                         writeTemp(*tempIo, "%Exiv2Website: http://www.exiv2.org/" + lineEnding);
