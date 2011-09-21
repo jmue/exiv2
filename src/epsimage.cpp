@@ -43,7 +43,6 @@ EXIV2_RCSID("@(#) $Id: epsimage.cpp $")
 #include "epsimage.hpp"
 #include "image.hpp"
 #include "basicio.hpp"
-#include "convert.hpp"
 #include "error.hpp"
 #include "futils.hpp"
 
@@ -62,56 +61,45 @@ namespace {
     using namespace Exiv2;
 
     // signature of DOS EPS
-    static const std::string dosEpsSignature = "\xC5\xD0\xD3\xC6";
+    const std::string dosEpsSignature = "\xC5\xD0\xD3\xC6";
 
     // first line of EPS
-    static const std::string epsFirstLine[] = {
+    const std::string epsFirstLine[] = {
         "%!PS-Adobe-3.0 EPSF-3.0",
         "%!PS-Adobe-3.0 EPSF-3.0 ", // OpenOffice
         "%!PS-Adobe-3.1 EPSF-3.0",  // Illustrator
     };
 
     // blank EPS file
-    static const std::string epsBlank = "%!PS-Adobe-3.0 EPSF-3.0\n"
-                                        "%%BoundingBox: 0 0 0 0\n";
+    const std::string epsBlank = "%!PS-Adobe-3.0 EPSF-3.0\n"
+                                 "%%BoundingBox: 0 0 0 0\n";
 
     // list of all valid XMP headers
-    static const struct { std::string header; std::string charset; } xmpHeadersDef[] = {
+    const std::string xmpHeaders[] = {
 
         // We do not enforce the trailing "?>" here, because the XMP specification
         // permits additional attributes after begin="..." and id="...".
 
         // normal headers
-        {"<?xpacket begin=\"\xef\xbb\xbf\" id=\"W5M0MpCehiHzreSzNTczkc9d\"", "UTF-8"},
-        {"<?xpacket begin=\"\xef\xbb\xbf\" id='W5M0MpCehiHzreSzNTczkc9d'",   "UTF-8"},
-        {"<?xpacket begin='\xef\xbb\xbf' id=\"W5M0MpCehiHzreSzNTczkc9d\"",   "UTF-8"},
-        {"<?xpacket begin='\xef\xbb\xbf' id='W5M0MpCehiHzreSzNTczkc9d'",     "UTF-8"},
-        {"<?xpacket begin=\"\xef\xbb\xbf\" id=\"W5M0MpCehiHzreSzNTczkc9d\"", "UTF-16BE"},
-        {"<?xpacket begin=\"\xef\xbb\xbf\" id='W5M0MpCehiHzreSzNTczkc9d'",   "UTF-16BE"},
-        {"<?xpacket begin='\xef\xbb\xbf' id=\"W5M0MpCehiHzreSzNTczkc9d\"",   "UTF-16BE"},
-        {"<?xpacket begin='\xef\xbb\xbf' id='W5M0MpCehiHzreSzNTczkc9d'",     "UTF-16BE"},
-        {"<?xpacket begin=\"\xef\xbb\xbf\" id=\"W5M0MpCehiHzreSzNTczkc9d\"", "UTF-16LE"},
-        {"<?xpacket begin=\"\xef\xbb\xbf\" id='W5M0MpCehiHzreSzNTczkc9d'",   "UTF-16LE"},
-        {"<?xpacket begin='\xef\xbb\xbf' id=\"W5M0MpCehiHzreSzNTczkc9d\"",   "UTF-16LE"},
-        {"<?xpacket begin='\xef\xbb\xbf' id='W5M0MpCehiHzreSzNTczkc9d'",     "UTF-16LE"},
-        {"<?xpacket begin=\"\xef\xbb\xbf\" id=\"W5M0MpCehiHzreSzNTczkc9d\"", "UTF-32BE"},
-        {"<?xpacket begin=\"\xef\xbb\xbf\" id='W5M0MpCehiHzreSzNTczkc9d'",   "UTF-32BE"},
-        {"<?xpacket begin='\xef\xbb\xbf' id=\"W5M0MpCehiHzreSzNTczkc9d\"",   "UTF-32BE"},
-        {"<?xpacket begin='\xef\xbb\xbf' id='W5M0MpCehiHzreSzNTczkc9d'",     "UTF-32BE"},
-        {"<?xpacket begin=\"\xef\xbb\xbf\" id=\"W5M0MpCehiHzreSzNTczkc9d\"", "UTF-32LE"},
-        {"<?xpacket begin=\"\xef\xbb\xbf\" id='W5M0MpCehiHzreSzNTczkc9d'",   "UTF-32LE"},
-        {"<?xpacket begin='\xef\xbb\xbf' id=\"W5M0MpCehiHzreSzNTczkc9d\"",   "UTF-32LE"},
-        {"<?xpacket begin='\xef\xbb\xbf' id='W5M0MpCehiHzreSzNTczkc9d'",     "UTF-32LE"},
+        "<?xpacket begin=\"\xef\xbb\xbf\" id=\"W5M0MpCehiHzreSzNTczkc9d\"",
+        "<?xpacket begin=\"\xef\xbb\xbf\" id='W5M0MpCehiHzreSzNTczkc9d'",
+        "<?xpacket begin='\xef\xbb\xbf' id=\"W5M0MpCehiHzreSzNTczkc9d\"",
+        "<?xpacket begin='\xef\xbb\xbf' id='W5M0MpCehiHzreSzNTczkc9d'",
 
         // deprecated headers (empty begin attribute, UTF-8 only)
-        {"<?xpacket begin=\"\" id=\"W5M0MpCehiHzreSzNTczkc9d\"", "UTF-8"},
-        {"<?xpacket begin=\"\" id='W5M0MpCehiHzreSzNTczkc9d'",   "UTF-8"},
-        {"<?xpacket begin='' id=\"W5M0MpCehiHzreSzNTczkc9d\"",   "UTF-8"},
-        {"<?xpacket begin='' id='W5M0MpCehiHzreSzNTczkc9d'",     "UTF-8"},
+        "<?xpacket begin=\"\" id=\"W5M0MpCehiHzreSzNTczkc9d\"",
+        "<?xpacket begin=\"\" id='W5M0MpCehiHzreSzNTczkc9d'",
+        "<?xpacket begin='' id=\"W5M0MpCehiHzreSzNTczkc9d\"",
+        "<?xpacket begin='' id='W5M0MpCehiHzreSzNTczkc9d'",
     };
 
     // list of all valid XMP trailers
-    static const struct { std::string trailer; bool readOnly; } xmpTrailersDef[] = {
+    struct XmpTrailer {
+        std::string trailer;
+        bool readOnly;
+    };
+
+    const XmpTrailer xmpTrailers[] = {
 
         // We do not enforce the trailing "?>" here, because the XMP specification
         // permits additional attributes after end="...".
@@ -123,10 +111,10 @@ namespace {
     };
 
     // closing part of all valid XMP trailers
-    static const std::string xmpTrailerEndDef = "?>";
+    const std::string xmpTrailerEnd = "?>";
 
     //! Write data into temp file, taking care of errors
-    static void writeTemp(BasicIo& tempIo, const byte* data, size_t size)
+    void writeTemp(BasicIo& tempIo, const byte* data, size_t size)
     {
         if (size == 0) return;
         if (tempIo.write(data, static_cast<long>(size)) != static_cast<long>(size)) {
@@ -138,13 +126,13 @@ namespace {
     }
 
     //! Write data into temp file, taking care of errors
-    static void writeTemp(BasicIo& tempIo, const std::string &data)
+    void writeTemp(BasicIo& tempIo, const std::string &data)
     {
         writeTemp(tempIo, reinterpret_cast<const byte*>(data.data()), data.size());
     }
 
     //! Get the current write position of temp file, taking care of errors
-    static uint32_t posTemp(BasicIo& tempIo)
+    uint32_t posTemp(BasicIo& tempIo)
     {
         const long pos = tempIo.tell();
         if (pos == -1) {
@@ -157,13 +145,13 @@ namespace {
     }
 
     //! Check whether a string has a certain beginning
-    static bool startsWith(const std::string& s, const std::string& start)
+    bool startsWith(const std::string& s, const std::string& start)
     {
         return s.size() >= start.size() && memcmp(s.data(), start.data(), start.size()) == 0;
     }
 
     //! Check whether a string contains only white space characters
-    static bool onlyWhitespaces(const std::string& s)
+    bool onlyWhitespaces(const std::string& s)
     {
         // According to the DSC 3.0 specification, 4.4 Parsing Rules,
         // only spaces and tabs are considered to be white space characters.
@@ -171,7 +159,7 @@ namespace {
     }
 
     //! Read the next line of a buffer, allow for changing line ending style
-    static size_t readLine(std::string& line, const byte* data, size_t startPos, size_t size)
+    size_t readLine(std::string& line, const byte* data, size_t startPos, size_t size)
     {
         line.clear();
         size_t pos = startPos;
@@ -189,7 +177,7 @@ namespace {
     }
 
     //! Read the previous line of a buffer, allow for changing line ending style
-    static size_t readPrevLine(std::string& line, const byte* data, size_t startPos, size_t size)
+    size_t readPrevLine(std::string& line, const byte* data, size_t startPos, size_t size)
     {
         line.clear();
         size_t pos = startPos;
@@ -214,58 +202,33 @@ namespace {
     }
 
     //! Find an XMP block
-    static void findXmp(size_t& xmpPos, size_t& xmpSize, const byte* data, size_t startPos, size_t size, bool write)
+    void findXmp(size_t& xmpPos, size_t& xmpSize, const byte* data, size_t startPos, size_t size, bool write)
     {
-        // prepare list of valid XMP headers
-        std::vector<std::pair<std::string, std::string> > xmpHeaders;
-        for (size_t i = 0; i < (sizeof xmpHeadersDef) / (sizeof *xmpHeadersDef); i++) {
-            const std::string &charset = xmpHeadersDef[i].charset;
-            std::string header(xmpHeadersDef[i].header);
-            if (!convertStringCharset(header, "UTF-8", charset.c_str())) {
-                throw Error(28, charset);
-            }
-            xmpHeaders.push_back(make_pair(header, charset));
-        }
-
         // search for valid XMP header
         xmpSize = 0;
         for (xmpPos = startPos; xmpPos < size; xmpPos++) {
             if (data[xmpPos] != '\x00' && data[xmpPos] != '<') continue;
-            for (size_t i = 0; i < xmpHeaders.size(); i++) {
-                const std::string &header = xmpHeaders[i].first;
+            for (size_t i = 0; i < (sizeof xmpHeaders) / (sizeof *xmpHeaders); i++) {
+                const std::string &header = xmpHeaders[i];
                 if (xmpPos + header.size() > size) continue;
                 if (memcmp(data + xmpPos, header.data(), header.size()) != 0) continue;
                 #ifdef DEBUG
                 EXV_DEBUG << "findXmp: Found XMP header at position: " << xmpPos << "\n";
                 #endif
 
-                // prepare list of valid XMP trailers in the charset of the header
-                const std::string &charset = xmpHeaders[i].second;
-                std::vector<std::pair<std::string, bool> > xmpTrailers;
-                for (size_t j = 0; j < (sizeof xmpTrailersDef) / (sizeof *xmpTrailersDef); j++) {
-                    std::string trailer(xmpTrailersDef[j].trailer);
-                    if (!convertStringCharset(trailer, "UTF-8", charset.c_str())) {
-                        throw Error(28, charset);
-                    }
-                    xmpTrailers.push_back(make_pair(trailer, xmpTrailersDef[j].readOnly));
-                }
-                std::string xmpTrailerEnd(xmpTrailerEndDef);
-                if (!convertStringCharset(xmpTrailerEnd, "UTF-8", charset.c_str())) {
-                    throw Error(28, charset);
-                }
-
                 // search for valid XMP trailer
                 for (size_t trailerPos = xmpPos + header.size(); trailerPos < size; trailerPos++) {
                     if (data[xmpPos] != '\x00' && data[xmpPos] != '<') continue;
-                    for (size_t j = 0; j < xmpTrailers.size(); j++) {
-                        const std::string &trailer = xmpTrailers[j].first;
+                    for (size_t j = 0; j < (sizeof xmpTrailers) / (sizeof *xmpTrailers); j++) {
+                        const std::string &trailer = xmpTrailers[j].trailer;
+                        const bool readOnly = xmpTrailers[j].readOnly;
+
                         if (trailerPos + trailer.size() > size) continue;
                         if (memcmp(data + trailerPos, trailer.data(), trailer.size()) != 0) continue;
                         #ifdef DEBUG
                         EXV_DEBUG << "findXmp: Found XMP trailer at position: " << trailerPos << "\n";
                         #endif
 
-                        const bool readOnly = xmpTrailers[j].second;
                         if (readOnly) {
                             #ifndef SUPPRESS_WARNINGS
                             EXV_WARNING << "Unable to handle read-only XMP metadata yet. Please provide your "
@@ -296,7 +259,7 @@ namespace {
     }
 
     //! Unified implementation of reading and writing EPS metadata
-    static void readWriteEpsMetadata(BasicIo& io, std::string& xmpPacket, NativePreviewList& nativePreviews, bool write)
+    void readWriteEpsMetadata(BasicIo& io, std::string& xmpPacket, NativePreviewList& nativePreviews, bool write)
     {
         // open input file
         if (io.open() != 0) {
@@ -767,7 +730,7 @@ namespace {
                 std::string type;
                 lineStreamBeginData >> type;
                 nativePreview.position_ = static_cast<long>(posAfterBeginData);
-                nativePreview.size_ = posAi7ThumbnailEndData - posAfterBeginData;
+                nativePreview.size_ = static_cast<uint32_t>(posAi7ThumbnailEndData - posAfterBeginData);
                 nativePreview.filter_ = "hex-ai7thumbnail-pnm";
                 nativePreview.mimeType_ = "image/x-portable-anymap";
                 if (depth != "8") {
@@ -789,7 +752,7 @@ namespace {
             if (posEndPhotoshop != posEndEps) {
                 NativePreview nativePreview;
                 nativePreview.position_ = static_cast<long>(posBeginPhotoshop);
-                nativePreview.size_ = posEndPhotoshop - posBeginPhotoshop;
+                nativePreview.size_ = static_cast<uint32_t>(posEndPhotoshop - posBeginPhotoshop);
                 nativePreview.width_ = 0;
                 nativePreview.height_ = 0;
                 nativePreview.filter_ = "hex-irb";

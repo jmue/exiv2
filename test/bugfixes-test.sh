@@ -152,7 +152,9 @@ num=683
 filename=exiv2-bug$num.jpg
 cp -f ../data/exiv2-nikon-d70.jpg $filename
 echo '------>' Bug $num '<-------' >&2
-$bin/exiv2 -u -v -f -r %Y-%m-%d-%a-%j $filename
+rm -f 2004-03-30-Tue-090.jpg
+$bin/exiv2 -u -f -r %Y-%m-%d-%a-%j $filename
+ls 2004-03-30-Tue-090.jpg
 
 num=711
 # Little endian (II)
@@ -180,11 +182,15 @@ $bin/exiv2 -u -v -M'set Exif.Image.ProcessingSoftware Intrusive update, writing 
 $bin/exiv2 -u -v -PEkyct $filename
 
 # Test easy-access keys (using a dummy bug number)
-num=726
-filename=exiv2-bug$num.jpg
-cp -f ../data/exiv2-empty.jpg $filename
-$bin/exiv2 -u -v -M"set Exif.Image.Make Samsung" $filename
-$samples/easyaccess-test $filename
+if { test -f $samples/easyaccess-test || test -f $samples/easyaccess-test.exe; }; then
+    num=726
+    filename=exiv2-bug$num.jpg
+    cp -f ../data/exiv2-empty.jpg $filename
+    $bin/exiv2 -u -v -M"set Exif.Image.Make Samsung" $filename
+    $samples/easyaccess-test $filename
+else
+    echo "bugfixes-test.sh: easyaccess-test executable not found. Skipping regression test for issue #726."
+fi
 
 # Test 'migration of XMP namespaces' (see #751 and related forum post)
 num=751
